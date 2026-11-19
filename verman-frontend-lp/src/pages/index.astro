@@ -3,7 +3,9 @@ import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import product from '../data/product.json';
 import { tools } from '../data/tools';
-import { installerPath, installerSize } from '../data/release';
+import { readFile } from 'node:fs/promises';
+const release = JSON.parse(await readFile('public/downloads/release.json', 'utf8'));
+const download = `/downloads/${product.filename}`;
 const features = [
   { icon: 'layers', title: 'Uma versão para cada projeto.', text: 'O legado continua funcionando. Seu próximo projeto usa o que há de novo. Cada pasta tem suas próprias escolhas.' },
   { icon: 'terminal', title: 'Seu terminal continua sendo seu.', text: 'Use node, php, python e os comandos que você já conhece. Os shims encontram a versão selecionada.' },
@@ -29,7 +31,7 @@ const questions = [
           <a class="release-pill" href="#download"> Seu setup tem um novo começo <span class="pill-version">v{product.version}</span></a>
           <h1>Seu código muda.<br/>Seu ambiente<br/><span class="hero-accent">acompanha.</span></h1>
           <p class="hero-description">Node, PHP, Python e muito mais. Instale e alterne versões por projeto, em um só lugar. Sem perder tempo configurando tudo de novo.</p>
-          <div class="hero-buttons">{installerPath && <a class="button button-dark" href={installerPath} download><Icon name="windows" size={19}/> Baixar para Windows <Icon name="download" size={18}/></a>}<a class={installerPath ? 'text-link' : 'button button-dark'} href="/docs/">Começar pela documentação </a></div>
+          <div class="hero-buttons"><a class="button button-dark" href={download} download><Icon name="windows" size={19}/> Baixar para Windows <Icon name="download" size={18}/></a><a class="text-link" href="/docs/">Começar pela documentação </a></div>
           <div class="hero-fine"><span><Icon name="check" size={14}/> CLI + aplicativo desktop</span><span><Icon name="check" size={14}/> Sem conta</span><span>Prévia · Windows x64</span></div>
         </div>
         <div class="hero-visual">
@@ -82,7 +84,7 @@ const questions = [
       <div class="container">
         <div class="section-heading centered"><span class="eyebrow">DO DOWNLOAD AO PRIMEIRO PROJETO</span><h2>Seu próximo setup.<br/>Em três passos.</h2><p>O Verman cuida das versões. Você cuida das ideias.</p></div>
         <div class="steps-grid">
-          <article class="step"><div class="step-number">01<span></span></div><h3>Instale uma vez.</h3><p>Baixe o instalador. CLI, desktop e documentação vão juntos. Marque a opção de configurar o PATH.</p>{installerPath ? <a href={installerPath} download class="step-link">Baixar o instalador <Icon name="download" size={16}/></a> : <a href="/docs/instalacao/" class="step-link">Ver guia de instalação</a>}<div class="step-visual install-visual"><span class="install-logo"><img src="/brand/verman-logo.png" alt="" width="38" height="38"/></span><div><strong>Verman</strong><span>CLI + desktop · Windows x64</span></div><Icon name="check" size={18}/></div></article>
+          <article class="step"><div class="step-number">01<span></span></div><h3>Instale uma vez.</h3><p>Baixe o instalador. CLI, desktop e documentação vão juntos. Marque a opção de configurar o PATH.</p><a href={download} download class="step-link">Baixar o instalador <Icon name="download" size={16}/></a><div class="step-visual install-visual"><span class="install-logo"><img src="/brand/verman-logo.png" alt="" width="38" height="38"/></span><div><strong>Verman</strong><span>CLI + desktop · Windows x64</span></div><Icon name="check" size={18}/></div></article>
           <article class="step"><div class="step-number">02<span></span></div><h3>Escolha suas versões.</h3><p>Selecione a pasta do projeto no desktop ou use a CLI. Escolha versões diferentes para projetos diferentes.</p><a href="/docs/projetos/" class="step-link">Entender projetos </a><div class="step-visual code-visual"><code><span>❯</span> verman use node lts<br/><span>❯</span> verman use php latest</code></div></article>
           <article class="step"><div class="step-number">03<span></span></div><h3>Continue de onde parou.</h3><p>A seleção fica em <code>.verman.toml</code>. Com os shims no PATH, seus comandos usam as versões daquela pasta.</p><a href="/docs/primeiros-passos/" class="step-link">Abrir primeiros passos </a><div class="step-visual project-visual"><span><Icon name="folder" size={17}/> meu-projeto</span><span><Icon name="code" size={14}/> .verman.toml <i>configurado</i></span></div></article>
         </div>
@@ -105,8 +107,6 @@ const questions = [
 
     <section class="faq-section section-pad"><div class="container faq-grid"><div><span class="eyebrow">ANTES DE COMEÇAR</span><h2>Bom saber.</h2><p>Respostas diretas para as dúvidas<br/>que aparecem no primeiro setup.</p><a href="/docs/" class="text-link">Todas as respostas nos guias </a></div><div class="faq-list">{questions.map(([question,answer]) => <details><summary>{question}<span class="faq-plus">+</span></summary><p>{answer}</p></details>)}</div></div></section>
 
-    <section id="download" class="download-section"><div class="container download-inner"><div><span class="eyebrow">SEU AMBIENTE, DO SEU JEITO.</span><h2>Pronto para voltar<br/>ao que importa?</h2><p>{installerPath ? 'Baixe o Verman. Escolha suas versões. E bora criar.' : 'O instalador da prévia ainda não está disponível neste site.'}</p></div><div class="download-actions">
-          {installerPath && installerSize !== null ? <><a href={installerPath} download class="button button-mint"><Icon name="windows" size={21}/> Baixar para Windows <Icon name="download" size={19}/></a><span>v{product.version} · x64 · {(installerSize / 1024 / 1024).toFixed(1).replace('.', ',')} MiB · Prévia</span><a href={`${installerPath}.sha256`} download class="checksum-link">SHA-256 do instalador </a><small>Pacote de avaliação sem assinatura digital.<br/><a href="/docs/instalacao/">Requisitos e detalhes desta prévia.</a></small></> : <a href="/docs/instalacao/" class="button button-mint">Ver guia de instalação</a>}
-        </div></div></section>
+    <section id="download" class="download-section"><div class="container download-inner"><div><span class="eyebrow">SEU AMBIENTE, DO SEU JEITO.</span><h2>Pronto para voltar<br/>ao que importa?</h2><p>Baixe o Verman. Escolha suas versões. E bora criar.</p></div><div class="download-actions"><a href={download} download class="button button-mint"><Icon name="windows" size={21}/> Baixar para Windows <Icon name="download" size={19}/></a><span>v{product.version} · x64 · {(release.bytes / 1024 / 1024).toFixed(1).replace('.', ',')} MiB · Prévia</span><a href={`${download}.sha256`} download class="checksum-link">SHA-256 do instalador </a><small>Pacote de avaliação sem assinatura digital.<br/><a href="/docs/instalacao/">Requisitos e detalhes desta prévia.</a></small></div></div></section>
   </main>
 </Base>

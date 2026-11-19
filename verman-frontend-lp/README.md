@@ -50,7 +50,7 @@ Selecione o repositório e a branch que contém a LP. O Railpack pode usar só e
 | Install command | `npm ci --ignore-scripts` |
 | Build command | `npm run build` |
 
-Marque `RAILPACK_NODE_VERSION=24` e `SITE_URL` com a URL HTTPS do domínio como disponíveis durante o build. Se o modo sem instalador foi usado num deploy anterior, remova `VERMAN_SITE_ONLY=1` do campo **Build command** e das variáveis de build. Com `npm run build`, o site é gerado com o instalador versionado.
+Marque `RAILPACK_NODE_VERSION=24` e `SITE_URL` com a URL HTTPS do domínio como disponíveis durante o build. O site é gerado com o instalador versionado e o checksum.
 
 O pacote 0.5.2 é de revisão: assinatura, validação em Windows limpo e licença comercial do compilador Inno ainda precisam ser concluídas antes de anunciar uma distribuição comercial pronta. O download na página é identificado como prévia.
 

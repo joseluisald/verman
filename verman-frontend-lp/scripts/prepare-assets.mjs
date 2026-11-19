@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir, copyFile, stat, rm } from "node:fs/promises";
+import { readFile, writeFile, mkdir, copyFile, stat } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -54,15 +54,6 @@ await writeFile(path.join(licenses, "fontes.txt"), fontLicenses.join("\n\n"));
 
 const installer = path.join(downloads, product.filename);
 const release = path.join(downloads, "release.json");
-if (process.env.VERMAN_SITE_ONLY === "1") {
-  await Promise.all([
-    rm(installer, { force: true }),
-    rm(`${installer}.sha256`, { force: true }),
-  ]);
-  await writeFile(release, JSON.stringify({ ...product, bytes: null }) + "\n");
-  console.log("Logo e fontes preparados para o site sem instalador.");
-  process.exit(0);
-}
 
 try {
   const bundledInstaller = path.join(root, "assets/installers", product.filename);

@@ -20,7 +20,7 @@ O plano de amadurecimento está em [ROADMAP_PRODUTO.md](ROADMAP_PRODUTO.md). Ste
 
 ## Estrutura e fluxo
 
-- `verman-frontend-lp/`: site estático Astro, Tailwind v4 via Vite, Alpine CSP e fontes locais. `npm ci --ignore-scripts`, `npm run dev` e `npm run build` dentro da pasta. Dez guias em `src/data/docs.ts` são renderizados no build; não há backend ou conta. `scripts/prepare-assets.mjs` copia o logo e verifica o SHA-256 do instalador antes de incluí-lo. Builds isolados usam a exportação versionada do logo em `assets/`. No Coolify, `VERMAN_SITE_ONLY=1` gera o site sem o pacote e oculta os links de download. O pacote é prévia; não anunciar assinatura/comercialização pronta. Capturas nativas estão em `public/screenshots`, com proveniência; não substituir por mocks nem expor dados pessoais. Atualize `src/data/product.json` ao preparar outra versão. Não misture dependências da LP com as do desktop.
+- `verman-frontend-lp/`: site estático Astro, Tailwind v4 via Vite, Alpine CSP e fontes locais. `npm ci --ignore-scripts`, `npm run dev` e `npm run build` dentro da pasta. Dez guias em `src/data/docs.ts` são renderizados no build; não há backend ou conta. `scripts/prepare-assets.mjs` copia o logo e verifica o SHA-256 do instalador antes de incluí-lo. Builds isolados usam a exportação versionada do logo em `assets/` e o instalador em `assets/installers/`. O pacote é prévia; não anunciar assinatura/comercialização pronta. Capturas nativas estão em `public/screenshots`, com proveniência; não substituir por mocks nem expor dados pessoais. Atualize `src/data/product.json` ao preparar outra versão. Não misture dependências da LP com as do desktop.
 
 ### Expansão de ferramentas (0.5.0)
 

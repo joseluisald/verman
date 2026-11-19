@@ -1,7 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import Logo from './Logo.astro';
-import { installerPath } from '../data/release';
+import product from '../data/product.json';
 const isDocs = Astro.url.pathname.startsWith('/docs');
 ---
 <header class="site-header" x-data="siteHeader" @keydown.escape.window="closeMenu">
@@ -14,7 +14,7 @@ const isDocs = Astro.url.pathname.startsWith('/docs');
     </nav>
     <div class="header-actions">
       <span class="platform"><Icon name="windows" size={14} /> Windows x64</span>
-      {installerPath && <a class="button button-small button-dark" href={installerPath} download aria-label="Baixar Verman para Windows"><span class="button-label-wide">Baixar Verman</span><span class="button-label-narrow">Baixar</span><Icon name="download" size={15} /></a>}
+      <a class="button button-small button-dark" href={`/downloads/${product.filename}`} download aria-label="Baixar Verman para Windows"><span class="button-label-wide">Baixar Verman</span><span class="button-label-narrow">Baixar</span><Icon name="download" size={15} /></a>
       <button class="menu-toggle icon-button" @click="toggleMenu" :aria-expanded="open" aria-controls="mobile-menu" aria-label="Abrir menu"><Icon name="menu" /></button>
     </div>
   </div>
@@ -22,6 +22,6 @@ const isDocs = Astro.url.pathname.startsWith('/docs');
     <a href="/#ferramentas" @click="closeMenu">Ferramentas </a>
     <a href="/#como-funciona" @click="closeMenu">Como funciona </a>
     <a href="/docs/" @click="closeMenu">Documentação </a>
-    {installerPath && <a href={installerPath} download>Baixar para Windows <Icon name="download" size={17}/></a>}
+    <a href={`/downloads/${product.filename}`} download>Baixar para Windows <Icon name="download" size={17}/></a>
   </nav>
 </header>
