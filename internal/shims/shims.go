@@ -17,10 +17,11 @@ import (
 	"github.com/joseluisald/verman/internal/config"
 	"github.com/joseluisald/verman/internal/durable"
 	"github.com/joseluisald/verman/internal/fslock"
+	"github.com/joseluisald/verman/internal/shimmeta"
 	"github.com/joseluisald/verman/internal/tool"
 )
 
-const Manifest = ".verman-shims.json"
+const Manifest = shimmeta.FileName
 
 var Names = func() []string {
 	names := []string{"verman"}
@@ -29,11 +30,6 @@ var Names = func() []string {
 	}
 	return names
 }()
-
-type manifest struct {
-	Schema int    `json:"schema"`
-	SHA256 string `json:"sha256"`
-}
 
 func Tool(executable string) string {
 	name := strings.ToLower(strings.TrimSuffix(filepath.Base(executable), filepath.Ext(executable)))
@@ -46,6 +42,13 @@ func Tool(executable string) string {
 }
 
 func Directory() (string, error) {
+	app, err := config.AppDir()
+	if err != nil {
+		return "", err
+	}
+	if app != "" {
+		return filepath.Join(app, "bin"), nil
+	}
 	base, err := config.BaseDir()
 	if err != nil {
 		return "", err
@@ -72,8 +75,15 @@ func Setup(ctx context.Context, source, dir string) error {
 		return err
 	}
 	hash := sha256.Sum256(data)
-	next := manifest{1, hex.EncodeToString(hash[:])}
-	var previous manifest
+	next := shimmeta.Manifest{Schema: 1, SHA256: hex.EncodeToString(hash[:])}
+	app, err := config.AppDirForExecutable(source)
+	if err != nil {
+		return err
+	}
+	if app != "" && !strings.EqualFold(dir, filepath.Join(app, "bin")) {
+		next.AppDir = app
+	}
+	var previous shimmeta.Manifest
 	previousData, readErr := os.ReadFile(filepath.Join(dir, Manifest))
 	if readErr == nil {
 		if json.Unmarshal(previousData, &previous) != nil || previous.Schema != 1 {
@@ -140,12 +150,8 @@ func Setup(ctx context.Context, source, dir string) error {
 }
 
 func IsDirectory(dir string) bool {
-	data, err := os.ReadFile(filepath.Join(dir, Manifest))
-	if err != nil || len(data) > 4096 {
-		return false
-	}
-	var value manifest
-	return json.Unmarshal(data, &value) == nil && value.Schema == 1 && len(value.SHA256) == 64
+	_, ok := shimmeta.Read(dir)
+	return ok
 }
 
 func cleanPATH(environ []string) []string {

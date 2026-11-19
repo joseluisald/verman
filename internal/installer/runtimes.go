@@ -8,16 +8,14 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-
-	"github.com/joseluisald/verman/internal/config"
 )
 
-func validateRuntime(ctx context.Context, root string, a Artifact) error {
+func validateRuntime(ctx context.Context, root, destination string, a Artifact) error {
 	switch a.Language {
 	case "node":
-		return validateNode(ctx, root, a)
+		return validateNode(ctx, root, destination, a)
 	case "php":
-		return preparePHP(ctx, root, a)
+		return preparePHP(ctx, root, destination, a)
 	case "python":
 		return preparePython(ctx, root, a)
 	default:
@@ -53,7 +51,7 @@ func runRuntime(ctx context.Context, root, executable string, args ...string) (s
 	return strings.TrimSpace(string(stdout.data)), nil
 }
 
-func preparePHP(ctx context.Context, root string, a Artifact) error {
+func preparePHP(ctx context.Context, root, destination string, a Artifact) error {
 	version, err := runRuntime(ctx, root, "php.exe", "-n", "-r", "echo PHP_VERSION;")
 	if err != nil {
 		return fmt.Errorf("PHP requer o Microsoft Visual C++ Redistributable x64 compatível: %w", err)
@@ -65,11 +63,7 @@ func preparePHP(ctx context.Context, root string, a Artifact) error {
 	if err != nil {
 		return fmt.Errorf("modelo php.ini-development ausente: %w", err)
 	}
-	final, err := config.InstallDir("php", a.Version)
-	if err != nil {
-		return err
-	}
-	extensionDir, err := phpExtensionDir(final)
+	extensionDir, err := phpExtensionDir(destination)
 	if err != nil {
 		return err
 	}

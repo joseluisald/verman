@@ -96,7 +96,7 @@ func TestTransactionCrashHelper(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	parent, err := managedParent(base, "node", true)
+	parent, err := managedParent(filepath.Join(base, "installs"), "node", true)
 	if err != nil {
 		t.Fatal(err)
 	}

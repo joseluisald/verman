@@ -219,7 +219,7 @@ func TestInstallLifecycle(t *testing.T) {
 			if err := os.WriteFile(filepath.Join(destination, "previous"), []byte("preservar"), 0600); err != nil {
 				t.Fatal(err)
 			}
-			validator := func(ctx context.Context, root string, artifact Artifact) error {
+			validator := func(ctx context.Context, root, _ string, artifact Artifact) error {
 				if failure == "validation" {
 					return fmt.Errorf("versão incorreta")
 				}

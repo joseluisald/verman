@@ -48,27 +48,31 @@ func installRuntime(ctx context.Context, language, version string, sink EventSin
 	if err := windowsTarget(language, platform); err != nil {
 		return err
 	}
-	return installOperation(ctx, p, platform, base, language, version, sink, clientFor(language), validateRuntime, repair)
+	destination, err := config.InstallDir(language, version)
+	if err != nil {
+		return err
+	}
+	return installOperation(ctx, p, platform, filepath.Join(base, "cache"), destination, language, version, sink, clientFor(language), validateRuntime, repair)
 }
 
-type runtimeValidator func(context.Context, string, Artifact) error
+type runtimeValidator func(ctx context.Context, staged, destination string, artifact Artifact) error
 
 func installWith(ctx context.Context, p Provider, platform Platform, base, language, version string, out io.Writer, client *http.Client, validate runtimeValidator) error {
 	return installWithEvents(ctx, p, platform, base, language, version, legacyEvents(out), client, validate)
 }
 
 func installWithEvents(ctx context.Context, p Provider, platform Platform, base, language, version string, sink EventSink, client *http.Client, validate runtimeValidator) error {
-	return installOperation(ctx, p, platform, base, language, version, sink, client, validate, false)
+	return installOperation(ctx, p, platform, filepath.Join(base, "cache"), filepath.Join(base, "installs", language, version), language, version, sink, client, validate, false)
 }
-func installOperation(ctx context.Context, p Provider, platform Platform, base, language, version string, sink EventSink, client *http.Client, validate runtimeValidator, repair bool) (resultErr error) {
+func installOperation(ctx context.Context, p Provider, platform Platform, cacheDir, destination, language, version string, sink EventSink, client *http.Client, validate runtimeValidator, repair bool) (resultErr error) {
 	if err := tool.Validate(language, version); err != nil {
 		return err
 	}
 	if err := ctx.Err(); err != nil {
 		return err
 	}
-	parent := filepath.Join(base, "installs", language)
-	parentRoot, err := managedParent(base, language, true)
+	parent := filepath.Dir(destination)
+	parentRoot, err := managedParent(filepath.Dir(parent), language, true)
 	if err != nil {
 		return err
 	}
@@ -81,11 +85,10 @@ func installOperation(ctx context.Context, p Provider, platform Platform, base, 
 	if err := recoverTransaction(parentRoot, version); err != nil {
 		return err
 	}
-	destination := filepath.Join(parent, version)
 	if _, err := readMetadataAt(destination, language, version, platform); err == nil && !repair {
 		return emit(sink, Event{Kind: EventAlreadyInstalled, Language: language, Version: version, Directory: destination})
 	}
-	catalog, err := loadCatalog(ctx, p, platform, filepath.Join(base, "cache", language+"-"+platform.OS+"-"+platform.Arch+".json"), false)
+	catalog, err := loadCatalog(ctx, p, platform, filepath.Join(cacheDir, language+"-"+platform.OS+"-"+platform.Arch+".json"), false)
 	if err != nil {
 		return err
 	}
@@ -105,7 +108,7 @@ func installOperation(ctx context.Context, p Provider, platform Platform, base, 
 	if selected == nil {
 		if language == "php" || language == "python" {
 			p = withHistory(p)
-			historical, err := loadCatalog(ctx, p, platform, filepath.Join(base, "cache", language+"-"+platform.OS+"-"+platform.Arch+"-history.json"), false)
+			historical, err := loadCatalog(ctx, p, platform, filepath.Join(cacheDir, language+"-"+platform.OS+"-"+platform.Arch+"-history.json"), false)
 			if err != nil {
 				return err
 			}
@@ -184,7 +187,7 @@ func installOperation(ctx context.Context, p Provider, platform Platform, base, 
 	if err := emit(sink, Event{Kind: EventValidating, Language: language, Version: version}); err != nil {
 		return err
 	}
-	if err := validate(ctx, payload, artifact); err != nil {
+	if err := validate(ctx, payload, destination, artifact); err != nil {
 		return fmt.Errorf("validar runtime: %w", err)
 	}
 	meta := Metadata{SchemaVersion: 1, Language: language, Version: version, OS: platform.OS, Arch: platform.Arch, Source: artifact.URL, SHA256: artifact.SHA256, Executables: artifact.Executables, Variant: artifact.Variant, Build: artifact.Build}
@@ -320,7 +323,7 @@ func (b *limitedOutput) Write(p []byte) (int, error) {
 	return len(p), nil
 }
 
-func validateNode(ctx context.Context, root string, artifact Artifact) error {
+func validateNode(ctx context.Context, root, _ string, artifact Artifact) error {
 	for _, relative := range artifact.Executables {
 		if _, err := executablePath(root, relative); err != nil {
 			return err

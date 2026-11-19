@@ -171,7 +171,7 @@ func TestChocolateyUninstallPreservesInstalledPackages(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(root, MetadataFileName), data, 0600); err != nil {
 		t.Fatal(err)
 	}
-	if err := uninstallAt(context.Background(), base, "chocolatey", "2.7.5"); err == nil || !strings.Contains(err.Error(), "contém pacotes") {
+	if err := uninstallAt(context.Background(), filepath.Join(base, "installs"), "chocolatey", "2.7.5"); err == nil || !strings.Contains(err.Error(), "contém pacotes") {
 		t.Fatalf("remoção deveria ser bloqueada: %v", err)
 	}
 	if _, err := os.Stat(lib); err != nil {

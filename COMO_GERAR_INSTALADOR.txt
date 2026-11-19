@@ -17,23 +17,23 @@ Nao precisa instalar outro Node nem mudar o PATH para npm.cmd.
 No PowerShell, sem precisar de administrador:
 
     cd "D:\Projetos\JLA Code\verman"
-    .\scripts\build-windows.ps1 -Version 0.5.3
+    .\scripts\build-windows.ps1 -Version 0.5.4
 
 O script compila interface, CLI, desktop, documentação e instalador.
 O logo do app tambem e aplicado ao instalador e aos atalhos.
 Para ter o atalho com logo, marque "Criar atalho na area de trabalho" ao instalar.
 Se faltar o compilador, informe seu caminho:
 
-    .\scripts\build-windows.ps1 -Version 0.5.3 -InnoCompiler "C:\Program Files\Inno Setup 7\ISCC.exe"
+    .\scripts\build-windows.ps1 -Version 0.5.4 -InnoCompiler "C:\Program Files\Inno Setup 7\ISCC.exe"
 
 Se o PowerShell bloquear o script:
 
-    powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\build-windows.ps1" -Version 0.5.3
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\build-windows.ps1" -Version 0.5.4
 
 3. INSTALAR
 Abra o arquivo gerado:
 
-    dist\Verman-Setup-0.5.3-windows-amd64.exe
+    dist\Verman-Setup-0.5.4-windows-amd64.exe
 
 Abra o instalador normalmente e deixe marcada a opção de adicionar
 a pasta bin ao PATH do usuário. Na instalação padrão, o caminho é:

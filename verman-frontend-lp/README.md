@@ -52,7 +52,7 @@ Selecione o repositório e a branch que contém a LP. O Railpack pode usar só e
 
 Marque `RAILPACK_NODE_VERSION=24` e `SITE_URL` com a URL HTTPS do domínio como disponíveis durante o build. O site é gerado com o instalador versionado e o checksum.
 
-O pacote 0.5.3 é de revisão: assinatura, validação em Windows limpo e licença comercial do compilador Inno ainda precisam ser concluídas antes de anunciar uma distribuição comercial pronta. O download na página é identificado como prévia.
+O pacote 0.5.4 é de revisão: assinatura, validação em Windows limpo e licença comercial do compilador Inno ainda precisam ser concluídas antes de anunciar uma distribuição comercial pronta. O download na página é identificado como prévia.
 
 ## Imagens e conteúdo
 

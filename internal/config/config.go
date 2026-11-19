@@ -29,18 +29,6 @@ func BaseDir() (string, error) {
 	return filepath.Join(home, ".verman"), nil
 }
 
-// InstallDir não impõe um layout de executáveis ao provedor.
-func InstallDir(lang, version string) (string, error) {
-	if err := tool.Validate(lang, version); err != nil {
-		return "", err
-	}
-	base, err := BaseDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(base, "installs", lang, version), nil
-}
-
 func validate(cfg *ProjectConfig) error {
 	for lang, version := range cfg.Tools {
 		if err := tool.Validate(lang, version); err != nil {

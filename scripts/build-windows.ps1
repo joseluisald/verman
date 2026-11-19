@@ -1,5 +1,5 @@
 param(
-    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version='0.5.3',
+    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version='0.5.4',
     [string]$InnoCompiler,
     [switch]$SkipNpmInstall,
     [switch]$SkipInstaller
@@ -24,6 +24,7 @@ try {
     Invoke-BuildTool -Executable go -CommandArgs @('build','-trimpath','-buildvcs=false','-ldflags',"-s -w -X github.com/joseluisald/verman/cmd.Version=$Version",'-o',(Join-Path $payload 'verman.exe'),'.') -Failure 'Build da CLI falhou'
     Invoke-BuildTool -Executable go -CommandArgs @('build','-trimpath','-buildvcs=false','-tags','desktop,production','-ldflags',"-s -w -H windowsgui -X main.Version=$Version",'-o',(Join-Path $payload 'verman-desktop.exe'),'./desktop') -Failure 'Build desktop falhou'
     Invoke-BuildTool -Executable go -CommandArgs @('run','./tools/windowsicon','-exe',(Join-Path $payload 'verman-desktop.exe'),'-icon',(Join-Path $payload 'assets\verman.ico')) -Failure 'Incorporacao do icone do desktop falhou'
+    [IO.File]::WriteAllText((Join-Path $payload '.verman-app'), "Verman")
     Invoke-BuildTool -Executable (Join-Path $payload 'verman.exe') -CommandArgs @('setup','--bin-dir',(Join-Path $payload 'bin')) -Failure 'Preparacao dos shims falhou'
     Invoke-BuildTool -Executable go -CommandArgs @('run','./tools/windowsbundle','-out',$payload) -Failure 'Documentacao offline falhou'
     if (-not $SkipInstaller) {

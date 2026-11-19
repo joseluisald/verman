@@ -158,7 +158,7 @@ func TestCancelledPublishRestoresPrevious(t *testing.T) {
 	}
 	root := filepath.Join(base, "installs", "node", "22.11.0")
 	transactionFixture(t, root, "", "OLD")
-	parent, err := managedParent(base, "node", false)
+	parent, err := managedParent(filepath.Join(base, "installs"), "node", false)
 	if err != nil {
 		t.Fatal(err)
 	}

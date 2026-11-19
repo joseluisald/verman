@@ -10,6 +10,8 @@ C:\verman\bin
 
 O instalador usa `C:\verman` por padrão e pode gravar onde a conta tiver acesso. Se escolher outra pasta, use a subpasta `bin` dela. Entradas no PATH do sistema podem preceder os shims. Nesse caso, `verman exec -- php -v` usa a versão selecionada.
 
+As ferramentas baixadas ficam em `C:\verman\tools\<ferramenta>\<versão>` na instalação padrão. A pasta `tools` acompanha o destino escolhido no instalador. Versões já instaladas em `%USERPROFILE%\.verman\installs` continuam disponíveis nesse local.
+
 **Feche e abra novamente o terminal e o editor.** Confira:
 
 ```powershell

@@ -17,7 +17,7 @@ Depois, dentro do projeto:
 verman use php latest
 php -v
 
-Os runtimes são baixados quando você escolher instalar uma versão. Suas instalações anteriores e seus projetos são preservados.
+O Verman baixa as versões que você pedir na subpasta tools do destino escolhido, por exemplo C:\verman\tools. As versões que já estão no seu perfil continuam disponíveis no mesmo lugar.
 
 O desktop precisa de WebView2. O assistente avisa se ele estiver ausente.
 

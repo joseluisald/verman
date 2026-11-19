@@ -148,7 +148,7 @@ const demo: Bridge = {
   },
   async SetupInfo() {
     return {
-      version: "0.5.3 · prévia",
+      version: "0.5.4 · prévia",
       cli_path: "C:\\verman\\verman.exe",
       cli_exists: true,
       shims: Object.fromEntries(languages.map(language => [language, language !== "php"])) as Record<Language, boolean>,

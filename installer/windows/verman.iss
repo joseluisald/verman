@@ -1,5 +1,5 @@
 #ifndef ProductVersion
-  #define ProductVersion "0.5.3"
+  #define ProductVersion "0.5.4"
 #endif
 #ifndef PayloadDir
   #error Informe /DPayloadDir com a pasta preparada pelo build-windows.ps1
@@ -47,6 +47,7 @@ Name: "desktopicon"; Description: "Criar atalho na área de trabalho"; GroupDesc
 [Files]
 Source: "{#PayloadDir}\verman.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PayloadDir}\verman-desktop.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#PayloadDir}\.verman-app"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PayloadDir}\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion
 Source: "{#PayloadDir}\bin\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#PayloadDir}\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs

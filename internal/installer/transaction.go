@@ -31,10 +31,11 @@ type transaction struct {
 	hook   func(string)
 }
 
-func journalName(version string) string { return ".transaction-" + version + ".json" }
-func stageName(version string) string   { return ".stage-" + version }
+func journalName(version string) string { return config.InstallJournalName(version) }
+func stageName(version string) string   { return config.InstallStageName(version) }
 
-func managedParent(base, language string, create bool) (*os.Root, error) {
+func managedParent(installRoot, language string, create bool) (*os.Root, error) {
+	base := filepath.Dir(installRoot)
 	if create {
 		if err := os.MkdirAll(base, 0700); err != nil {
 			return nil, err
@@ -49,7 +50,7 @@ func managedParent(base, language string, create bool) (*os.Root, error) {
 	if err != nil {
 		return nil, err
 	}
-	for _, name := range []string{"installs", language} {
+	for _, name := range []string{filepath.Base(installRoot), language} {
 		if create {
 			if err := root.Mkdir(name, 0700); err != nil && !os.IsExist(err) {
 				root.Close()
@@ -249,11 +250,11 @@ func Recover(ctx context.Context, language, version string) error {
 	if err := tool.Validate(language, version); err != nil {
 		return err
 	}
-	base, err := config.BaseDir()
+	destination, err := config.InstallDir(language, version)
 	if err != nil {
 		return err
 	}
-	parent, err := managedParent(base, language, false)
+	parent, err := managedParent(filepath.Dir(filepath.Dir(destination)), language, false)
 	if err != nil {
 		return err
 	}

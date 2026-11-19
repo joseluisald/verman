@@ -31,19 +31,19 @@ func Uninstall(ctx context.Context, dir, language, version string, allowSelected
 	if (cfg.Tools[language] == version || global.Tools[language] == version) && !allowSelected {
 		return fmt.Errorf("%s %s está selecionado pelo projeto atual ou globalmente; remover deixará sua seleção sem instalação. Use --allow-selected para permitir; as configurações serão mantidas", language, version)
 	}
-	base, err := config.BaseDir()
+	destination, err := config.InstallDir(language, version)
 	if err != nil {
 		return err
 	}
-	return uninstallAt(ctx, base, language, version)
+	return uninstallAt(ctx, filepath.Dir(filepath.Dir(destination)), language, version)
 }
 
-func uninstallAt(ctx context.Context, base, language, version string) (resultErr error) {
+func uninstallAt(ctx context.Context, installRoot, language, version string) (resultErr error) {
 	if err := tool.Validate(language, version); err != nil {
 		return err
 	}
 	// Verificação lexical e resolvida antes de qualquer remoção recursiva.
-	rootPath, err := filepath.Abs(filepath.Join(base, "installs"))
+	rootPath, err := filepath.Abs(installRoot)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func uninstallAt(ctx context.Context, base, language, version string) (resultErr
 	if err != nil || !filepath.IsLocal(rel) {
 		return fmt.Errorf("destino fora das instalações gerenciadas")
 	}
-	for _, path := range []string{base, rootPath, filepath.Join(rootPath, language), target} {
+	for _, path := range []string{filepath.Dir(rootPath), rootPath, filepath.Join(rootPath, language), target} {
 		info, err := os.Lstat(path)
 		if err != nil {
 			return fmt.Errorf("consultar instalação %s %s: %w", language, version, err)

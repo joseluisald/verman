@@ -31,7 +31,7 @@ func newSetupCmd() *cobra.Command {
 		_, err = fmt.Fprintf(cmd.OutOrStdout(), "Shims instalados em %s\nColoque essa pasta antes dos outros runtimes no PATH e reabra o terminal uma vez. Depois, use muda a seleção sem ativação.\nUse scripts/setup-path.ps1 para configurar o PATH com diagnóstico de conflitos de escopo.\n", dir)
 		return err
 	}}
-	command.Flags().StringVar(&dir, "bin-dir", "", "Diretório dos shims (padrão ~/.verman/bin)")
+	command.Flags().StringVar(&dir, "bin-dir", "", "Diretório dos shims (padrão: subpasta bin do Verman instalado ou ~/.verman/bin)")
 	return command
 }
 func init() { rootCmd.AddCommand(newSetupCmd()) }

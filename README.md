@@ -4,7 +4,7 @@ Gerencie Node.js, PHP, Python, Bun, Go, Deno, Git, Rust, Composer, Yarn, pnpm, v
 
 ## Instalar
 
-1. Abra `dist/Verman-Setup-0.5.3-windows-amd64.exe`.
+1. Abra `dist/Verman-Setup-0.5.4-windows-amd64.exe`.
 2. Deixe marcada a opção de adicionar a pasta `bin` ao PATH do usuário.
 3. Feche e abra novamente o terminal e o editor.
 
@@ -15,6 +15,8 @@ C:\verman\bin
 ```
 
 Se escolher outra pasta de instalação, use a subpasta `bin` dela. O instalador faz essa configuração quando a opção está marcada.
+
+Novas versões ficam em `C:\verman\tools\<ferramenta>\<versão>` por padrão. Se escolher outro destino, a subpasta `tools` acompanha a instalação. As versões que já estão em `%USERPROFILE%\.verman\installs` continuam disponíveis no mesmo local.
 
 Confira em um terminal novo:
 
@@ -57,7 +59,7 @@ Para configurar o PATH depois, execute novamente o instalador e marque essa opç
 Tenha Go (versão do `go.mod`), Node/npm e Inno Setup. Na raiz:
 
 ```powershell
-.\scripts\build-windows.ps1 -Version 0.5.3
+.\scripts\build-windows.ps1 -Version 0.5.4
 ```
 
 O script gera interface, CLI, desktop, documentação e instalador em `dist`. O build sozinho não altera o PATH. Passo a passo: [COMO_GERAR_INSTALADOR.txt](COMO_GERAR_INSTALADOR.txt).
