@@ -1,0 +1,37 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '@fontsource-variable/manrope';
+import '@fontsource-variable/dm-sans';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+interface Props { title?: string; description?: string; docs?: boolean; }
+const { title = 'Verman — suas ferramentas, na versão certa.', description = 'Gerencie versões de Node, PHP, Python e outras 10 ferramentas no Windows. Um só aplicativo, uma CLI e um ambiente para cada projeto.', docs = false } = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description}/>
+    <meta name="theme-color" content="#173b32"/>
+    <meta name="color-scheme" content="light"/>
+    <meta name="generator" content={Astro.generator}/>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' ws://localhost:* ws://127.0.0.1:*; object-src 'none'; base-uri 'self'; form-action 'none'" />
+    <title>{title}</title>
+    {canonical && <link rel="canonical" href={canonical}/>}
+    <meta property="og:title" content={title}/><meta property="og:description" content={description}/><meta property="og:type" content="website"/><meta property="og:locale" content="pt_BR"/>
+    <meta property="og:image" content={Astro.site ? new URL('/screenshots/visao-geral.png', Astro.site).href : '/screenshots/visao-geral.png'}/><meta property="og:image:alt" content="Captura real do aplicativo Verman para Windows"/><meta name="twitter:card" content="summary_large_image"/>
+    {canonical && <meta property="og:url" content={canonical}/>}
+    <link rel="icon" type="image/png" href="/brand/verman-logo.png"/>
+  </head>
+  <body class:list={{ 'docs-body': docs }}>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <Header />
+    <slot />
+    <Footer />
+    <div class="toast" role="status" aria-live="polite" id="copy-status"></div>
+    <script src="../scripts/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+---
+import Logo from './Logo.astro';
+import product from '../data/product.json';
+---
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div><Logo light /><p>Menos configuração.<br/>Mais espaço para criar.</p></div>
+    <div class="footer-links"><span>Explore</span><a href="/#ferramentas">As 13 ferramentas</a><a href="/#desktop">Conheça o desktop</a><a href="/#como-funciona">Como funciona</a></div>
+    <div class="footer-links"><span>Comece por aqui</span><a href="/docs/instalacao/">Instalação</a><a href="/docs/path-e-terminal/">PATH e terminal</a><a href="/docs/variaveis-de-ambiente/">Variáveis de ambiente</a></div>
+    <div class="footer-links"><span>Precisa de uma mão?</span><a href="/docs/">Documentação </a><a href="/docs/diagnostico/">Resolver um problema</a><a href={`/downloads/${product.filename}.sha256`} download>Conferir SHA-256</a></div>
+  </div>
+  <div class="container footer-bottom"><span>Verman {product.version} · Prévia para Windows x64.</span><span>Seus projetos. Suas versões. Sua máquina.</span><a href="/docs/instalacao/">Sobre esta versão</a></div>
+</footer>

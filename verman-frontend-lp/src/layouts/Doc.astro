@@ -1,0 +1,36 @@
+---
+import Base from './Base.astro';
+import Icon from '../components/Icon.astro';
+import { docs, type DocPage } from '../data/docs';
+import product from '../data/product.json';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+interface Props { doc: DocPage; }
+const { doc } = Astro.props;
+const processor = await createMarkdownProcessor({ gfm: true, shikiConfig: { theme: 'github-dark', wrap: false } });
+const rendered = await processor.render(doc.body);
+const headings = rendered.metadata.headings.filter(heading => heading.depth === 2);
+const groups = [...new Set(docs.map(page => page.section))];
+const index = docs.findIndex(page => page.slug === doc.slug);
+const previous = docs[index - 1];
+const next = docs[index + 1];
+---
+<Base title={`${doc.title} — Documentação Verman`} description={doc.description} docs>
+  <main id="conteudo" class="container docs-shell" x-data="docsNav" @keydown.escape.window="close">
+    <button class="docs-mobile-toggle" @click="toggle" :aria-expanded="open" aria-controls="docs-navigation"><Icon name="menu" size={16}/> Navegar na documentação <Icon name="chevron" size={14}/></button>
+    <aside class="docs-sidebar" :class="sidebarClass" id="docs-navigation" aria-label="Navegação da documentação">
+      <span class="docs-label">DOCUMENTAÇÃO</span>
+      <label class="docs-search"><Icon name="search" size={15}/><input type="search" placeholder="Buscar um guia…" aria-label="Buscar na documentação" x-model="query" @input.debounce.100ms="filter"/></label>
+      <nav aria-label="Guias do Verman">{groups.map(group => <div class="docs-nav-group"><span>{group}</span>{docs.filter(page => page.section === group).map(page => <a href={`/docs/${page.slug}/`} data-doc-link aria-current={page.slug === doc.slug ? 'page' : undefined}>{page.title}</a>)}</div>)}<p class="docs-no-results" data-no-results hidden>Nenhum guia encontrado. Tente “PATH” ou “instalação”.</p></nav>
+      <div class="docs-help"><span>É sua primeira vez por aqui?</span><a href="/docs/primeiros-passos/" class="text-link">Comece em três passos </a></div>
+    </aside>
+    <article class="doc-article">
+      <div class="doc-breadcrumb"><a href="/docs/">Documentação</a><span>/</span><span>{doc.section}</span></div>
+      <h1>{doc.title}</h1><p class="doc-description">{doc.description}</p>
+      <div class="doc-meta"><span><Icon name="windows" size={12}/> Windows x64</span><span>Verman {product.version}</span><span>CLI + desktop</span></div>
+      <div class="doc-prose" set:html={rendered.code}/>
+      <nav class="doc-pagination" aria-label="Guias anterior e próximo">{previous ? <a href={`/docs/${previous.slug}/`}><span>Guia anterior</span>{previous.title}</a> : <span/>}{next ? <a href={`/docs/${next.slug}/`}><span>Próximo guia</span>{next.title}</a> : <a href="/"><span>Voltar ao início</span>Conhecer o Verman</a>}</nav>
+      <p class="doc-footnote">O aplicativo também inclui documentação de uso offline.</p>
+    </article>
+    <aside class="docs-toc" aria-label="Nesta página"><span>NESTA PÁGINA</span>{headings.map(heading => <a href={`#${heading.slug}`}>{heading.text}</a>)}</aside>
+  </main>
+</Base>

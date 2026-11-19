@@ -1,0 +1,24 @@
+Verman — CLI e Desktop
+
+O instalador inclui o app, a CLI e a documentação offline.
+
+Deixe marcada a opção de configurar o PATH do sistema. Na instalação padrão, esta pasta será colocada primeiro:
+
+C:\Program Files\Verman\bin
+
+Se escolher outra pasta de instalação, será usada a subpasta bin dela.
+
+Após instalar, feche e abra novamente o terminal e o editor. Se ainda não reconhecer os comandos ou mostrar a versão antiga, reinicie o PC. Confira:
+
+verman --version
+
+Depois, dentro do projeto:
+
+verman use php latest
+php -v
+
+Os runtimes são baixados quando você escolher instalar uma versão. Suas instalações anteriores e seus projetos são preservados.
+
+O desktop precisa de WebView2. O assistente avisa se ele estiver ausente.
+
+Use “Como começar” ou “Documentação” para consultar os guias.

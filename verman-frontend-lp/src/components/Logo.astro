@@ -1,0 +1,8 @@
+---
+interface Props { light?: boolean; }
+const { light = false } = Astro.props;
+---
+<a href="/" class:list={['brand', { 'brand-light': light }]} aria-label="Verman — início">
+  <img src="/brand/verman-logo.png" alt="" width="36" height="36" />
+  <span>verman<span class="brand-period">.</span></span>
+</a>

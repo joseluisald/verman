@@ -1,0 +1,15 @@
+/dist/
+/verman.exe
+/verman
+/scripts/dist/
+.verman.toml.lock
+/desktop/frontend/node_modules/
+/desktop/frontend/dist/*
+!/desktop/frontend/dist/.gitkeep
+/desktop/*.syso
+/verman-frontend-lp/node_modules/
+/verman-frontend-lp/.astro/
+/verman-frontend-lp/dist/
+/verman-frontend-lp/public/brand/
+/verman-frontend-lp/public/downloads/
+/verman-frontend-lp/public/licenses/

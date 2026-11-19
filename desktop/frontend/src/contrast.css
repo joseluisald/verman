@@ -1,0 +1,113 @@
+/* Texto secundário também mantém contraste AA nos painéis claros. */
+.breadcrumb,
+.eyebrow,
+.page-heading p,
+.stats p,
+.section-heading p,
+.runtime-status,
+.runtime-card > p,
+.selected-runtime > span:first-child,
+.card-bottom > span,
+.count,
+.empty-inline strong,
+.empty-inline p,
+.main-footer,
+.project-banner .eyebrow,
+.project-banner p,
+.check-label,
+.catalog-scope,
+.scope-description,
+th,
+td,
+td > small,
+.catalog-footer,
+.footnote,
+.project-detail small,
+.project-detail p,
+.project-tools p,
+.info-note,
+.recent-project small,
+.operation-row p,
+.progress-meta,
+.diagnosis-heading p,
+.diagnosis dt,
+.setup-step p,
+.empty-state,
+.search,
+.segmented > button {
+  color: #62715e;
+}
+.badge.project {
+  color: #446b38;
+}
+.badge.neutral {
+  color: #5e6b62;
+}
+.badge.warning {
+  color: #805a22;
+}
+.badge.ready {
+  color: #416f42;
+}
+.preview-note {
+  color: #766136;
+}
+.catalog-warning {
+  color: #805d27;
+}
+.diagnosis-action {
+  color: #84632d;
+}
+.empty-state h3,
+.diagnosis dd,
+.markdown {
+  color: #53684a;
+}
+.language-tabs > button {
+  color: #62715e;
+}
+.button.selected,
+.step-number,
+.step-number.done {
+  color: #4b6c38;
+}
+dialog p {
+  color: #62715e;
+}
+.danger,
+.operation-error {
+  color: #94503b;
+}
+.code-block {
+  color: #536a44;
+}
+.notice span,
+.catalog-warning {
+  overflow-wrap: anywhere;
+}
+.eyebrow,
+.selected-runtime > span:first-child,
+.project-banner .eyebrow {
+  font-size: 10px;
+}
+.badge,
+.runtime-status,
+.card-bottom > span,
+.card-bottom > button,
+.stats p,
+.empty-inline p,
+.quickstart > .text-btn,
+.catalog-footer,
+.main-footer {
+  font-size: 11px;
+}
+.count {
+  color: #62715e;
+}
+.quickstart .badge {
+  font-size: 9px;
+}
+.selected-runtime strong {
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}

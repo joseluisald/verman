@@ -1,0 +1,16 @@
+{
+    "application":  "Verman",
+    "version":  "0.5.2",
+    "executable":  "dist/windows/payload/verman-desktop.exe",
+    "source":  "Aplicativo Windows nativo Wails, com servicos Go reais",
+    "capture":  "Captura direta da janela visivel pelo Windows, sem reconstruir a interface",
+    "isolated_profile":  true,
+    "installed_runtime":  "Node.js 22.12.0 instalado pela CLI oficial em perfil privado para demonstracao",
+    "persistent_user_environment_changed":  false,
+    "captured_at":  "2026-11-18T23:54:55.8101301Z",
+    "screens":  [
+                    "visao-geral.png",
+                    "ferramentas.png",
+                    "documentacao.png"
+                ]
+}

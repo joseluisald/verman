@@ -1,0 +1,68 @@
+VERMAN — BUILD E INSTALAÇÃO
+==========================
+
+1. PREPARAR
+Tenha Go (versão do go.mod), Node/npm e Inno Setup (ISCC.exe).
+Neste computador, o compilador está em dist\tooling\inno\ISCC.exe.
+
+Se Node/npm for gerenciado pelo Verman, na raiz do projeto execute:
+
+    verman use node lts
+    npm --version
+
+O build reconhece npm.exe do Verman e npm.cmd do Node tradicional.
+Nao precisa instalar outro Node nem mudar o PATH para npm.cmd.
+
+2. GERAR
+No PowerShell, sem precisar de administrador:
+
+    cd "D:\Projetos\JLA Code\verman"
+    .\scripts\build-windows.ps1 -Version 0.5.2
+
+O script compila interface, CLI, desktop, documentação e instalador.
+O logo do app tambem e aplicado ao instalador e aos atalhos.
+Para ter o atalho com logo, marque "Criar atalho na area de trabalho" ao instalar.
+Se faltar o compilador, informe seu caminho:
+
+    .\scripts\build-windows.ps1 -Version 0.5.2 -InnoCompiler "C:\Program Files\Inno Setup 7\ISCC.exe"
+
+Se o PowerShell bloquear o script:
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\build-windows.ps1" -Version 0.5.2
+
+3. INSTALAR
+Abra o arquivo gerado:
+
+    dist\Verman-Setup-0.5.2-windows-amd64.exe
+
+Aceite o pedido de administrador e deixe marcada a opção de adicionar
+a pasta bin ao PATH do sistema. Na instalação padrão, o caminho é:
+
+    C:\Program Files\Verman\bin
+
+Essa pasta deve ficar antes dos caminhos de outros PHP, Node ou Python.
+Se instalar em outra pasta, use a subpasta bin dela no PATH.
+O build sozinho não configura o PATH: isso acontece na instalação.
+
+4. USAR
+Feche e abra novamente o terminal e o editor. Confira:
+
+    verman --version
+
+Dentro da pasta do seu projeto:
+
+    verman use php latest
+    php -v
+
+Ou abra Verman pelo menu Iniciar e escolha seu projeto e suas versões.
+Se ainda não reconhecer os comandos ou mostrar a versão antiga,
+reinicie o PC e teste novamente. Se persistir, rode: verman doctor php
+Para configurar depois, execute o instalador novamente com a opção de PATH.
+
+5. ATUALIZAR
+Troque o número em -Version, gere novamente e execute o novo instalador.
+Feche o app antes de gerar/atualizar. Runtimes e projetos são preservados.
+
+Antes da distribuição comercial, faltam assinatura, testes em Windows
+limpo e verificar a licença comercial do compilador Inno Setup.
+Detalhes técnicos: docs\DESKTOP.md e ROADMAP_PRODUTO.md.

@@ -1,0 +1,112 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import product from '../data/product.json';
+import { tools } from '../data/tools';
+import { readFile } from 'node:fs/promises';
+const release = JSON.parse(await readFile('public/downloads/release.json', 'utf8'));
+const download = `/downloads/${product.filename}`;
+const features = [
+  { icon: 'layers', title: 'Uma versão para cada projeto.', text: 'O legado continua funcionando. Seu próximo projeto usa o que há de novo. Cada pasta tem suas próprias escolhas.' },
+  { icon: 'terminal', title: 'Seu terminal continua sendo seu.', text: 'Use node, php, python e os comandos que você já conhece. Os shims encontram a versão selecionada.' },
+  { icon: 'folder', title: 'CLI e desktop, juntos.', text: 'Escolha pela interface ou pela linha de comando. As instalações e configurações são as mesmas.' },
+  { icon: 'shield', title: 'Saiba de onde vem cada versão.', text: 'Pacotes de fontes definidas pelo provedor, com checksum conferido antes de concluir a instalação.' },
+  { icon: 'refresh', title: 'Menos adivinhação nos problemas.', text: 'Diagnostique conflitos de PATH, verifique arquivos e repare uma instalação com comandos próprios.' },
+  { icon: 'book', title: 'Um guia que vai com você.', text: 'A documentação também está dentro do aplicativo. Consulte os primeiros passos mesmo sem conexão.' },
+];
+const questions = [
+  ['Preciso desinstalar o Node, PHP ou Python que já tenho?', 'Não. O Verman mantém as instalações externas. Para usar as versões gerenciadas, deixe a pasta de shims do Verman no início do PATH e reabra seu terminal.'],
+  ['Funciona no Linux ou no macOS?', 'Esta versão atende Windows x64. Linux, macOS e outras arquiteturas ainda não estão habilitados.'],
+  ['O que muda entre instalar, usar e definir como global?', 'install baixa uma versão. use salva a escolha no projeto e instala se necessário. global define o padrão para ferramentas que o projeto não escolheu.'],
+  ['Dá para trabalhar sem internet?', 'Você pode usar e executar versões já instaladas, diagnosticar e verificar arquivos. Catálogos podem usar cache. Instalar ou reparar uma versão exige conexão.'],
+  ['O Verman configura minhas variáveis de ambiente?', 'O instalador oferece a configuração do PATH. Na execução, o Verman prepara as variáveis necessárias a PHP, Python, Go, Rust, vcpkg e Chocolatey. Variáveis de aplicação e arquivos .env continuam sob seu controle.'],
+  ['O que acontece se eu remover o aplicativo?', 'O desinstalador preserva seus runtimes, configurações e projetos. Remover uma versão de ferramenta é uma operação separada dentro do Verman.'],
+];
+---
+<Base>
+  <main id="conteudo">
+    <section class="hero section-pad">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <a class="release-pill" href="#download"> Seu setup tem um novo começo <span class="pill-version">v{product.version}</span></a>
+          <h1>Seu código muda.<br/>Seu ambiente<br/><span class="hero-accent">acompanha.</span></h1>
+          <p class="hero-description">Node, PHP, Python e muito mais. Instale e alterne versões por projeto, em um só lugar. Sem perder tempo configurando tudo de novo.</p>
+          <div class="hero-buttons"><a class="button button-dark" href={download} download><Icon name="windows" size={19}/> Baixar para Windows <Icon name="download" size={18}/></a><a class="text-link" href="/docs/">Começar pela documentação </a></div>
+          <div class="hero-fine"><span><Icon name="check" size={14}/> CLI + aplicativo desktop</span><span><Icon name="check" size={14}/> Sem conta</span><span>Prévia · Windows x64</span></div>
+        </div>
+        <div class="hero-visual">
+          <span class="visual-note"> Tudo no seu lugar.</span>
+          <div class="hero-screen"><img src="/screenshots/visao-geral.png" alt="Captura real da visão geral do Verman no Windows, com as ferramentas disponíveis e o ambiente selecionado." width="1466" height="953" fetchpriority="high"/></div>
+          <div class="hero-terminal"><div class="mini-terminal-heading"><Icon name="terminal" size={15}/><span>No seu terminal, como sempre.</span><span class="terminal-dots">•••</span></div><code><span class="terminal-prompt">❯</span> verman use node lts<span class="cursor"></span></code><div class="mini-terminal-foot"><Icon name="check" size={13}/> Uma escolha. No app e na CLI.</div></div>
+          <span class="visual-caption">Captura real do aplicativo para Windows.</span>
+          <span class="orbit orbit-one" aria-hidden="true"></span><span class="orbit orbit-two" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="container hero-bottom"><span>SEU AMBIENTE DE DESENVOLVIMENTO, REUNIDO.</span><div><span>13 ferramentas</span><span>1 configuração por projeto</span><span>0 contas para começar</span></div></div>
+    </section>
+
+    <section id="ferramentas" class="tools-section section-pad">
+      <div class="container" x-data="toolTerminal">
+        <div class="section-heading split-heading"><div><span class="eyebrow"><span class="tiny-line"></span> UM SÓ LUGAR</span><h2>Um gerenciador.<br/>Muitas possibilidades.</h2></div><p>Do primeiro script à sua stack completa.<br/>Escolha uma ferramenta e veja como começar.</p></div>
+        <div class="tool-showcase">
+          <div class="tools-list" role="tablist" aria-label="Exemplos por ferramenta" @keydown="keyboard">
+            {tools.map((tool, index) => <button type="button" class="tool-chip" role="tab" id={`tool-${tool.id}`} aria-controls="tool-example" aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1} data-tool={tool.id} data-command={tool.command} data-description={tool.description} data-dependency={tool.dependency} @click="chooseTool"><span class="tool-monogram" style={`--tool-color:${tool.color}`}>{tool.mark}</span><span>{tool.name}</span><span class="tool-dot"></span></button>)}
+            <p class="tools-foot"><Icon name="windows" size={14}/> Todas disponíveis para Windows x64.</p>
+          </div>
+          <div class="terminal-panel" id="tool-example" role="tabpanel" aria-label="Comandos para usar a ferramenta selecionada" data-code-block>
+            <div class="terminal-top"><span class="window-dots"><i></i><i></i><i></i></span><span>seu-projeto / powershell</span><button class="terminal-copy" data-copy aria-label="Copiar comandos da ferramenta"><Icon name="copy" size={15}/><span>Copiar</span></button></div>
+            <div class="terminal-body"><span class="code-comment"># escolha sua versão. continue criando.</span><pre><code data-terminal-code>verman list node --available{'\n'}verman use node lts{'\n'}node --version</code></pre><span class="terminal-ready"><span data-tool-description>JavaScript com npm e npx.</span></span></div>
+          </div>
+        </div>
+        <div class="section-tail"><p>Composer usa o PHP selecionado. Yarn usa o Node selecionado. Rust e vcpkg podem precisar de ferramentas C++.</p><a href="/docs/ferramentas/" class="text-link">Ferramentas e requisitos </a></div>
+      </div>
+    </section>
+
+    <section class="features-section section-pad">
+      <div class="container">
+        <div class="section-heading centered"><span class="eyebrow">FEITO PARA O SEU FLUXO</span><h2>Mais código.<br/>Menos “na minha máquina funciona”.</h2><p>Seu ambiente organizado, do projeto que você mantém<br class="desktop-break"/> ao próximo que você vai tirar do papel.</p></div>
+        <div class="features-grid">{features.map((feature) => <article class="feature"><div class="feature-top"><span class="feature-icon"><Icon name={feature.icon} size={23}/></span></div><h3>{feature.title}</h3><p>{feature.text}</p></article>)}</div>
+      </div>
+    </section>
+
+    <section id="desktop" class="desktop-section section-pad" x-data="desktopGallery">
+      <div class="container">
+        <div class="section-heading split-heading"><div><span class="eyebrow"><span class="tiny-line"></span> PODE ABRIR. É O APP DE VERDADE.</span><h2>Visual para escolher.<br/>Terminal para continuar.</h2></div><a href="/docs/primeiros-passos/" class="text-link">Conheça o fluxo </a></div>
+        <div class="gallery-tabs" role="group" aria-label="Telas do aplicativo"><button data-screen="0" @click="chooseScreen" :aria-pressed="current === 0" aria-pressed="true"><Icon name="layers" size={16}/>Visão geral</button><button data-screen="1" @click="chooseScreen" :aria-pressed="current === 1" aria-pressed="false"><Icon name="package" size={16}/>Ferramentas</button><button data-screen="2" @click="chooseScreen" :aria-pressed="current === 2" aria-pressed="false"><Icon name="book" size={16}/>Documentação</button><span>Verman {product.version} · Windows</span></div>
+        <figure class="desktop-frame"><img src="/screenshots/visao-geral.png" :src="screen.src" :alt="screen.alt" alt="Visão geral real do Verman no Windows." width="1466" height="953" loading="lazy"/><button class="expand-button" @click="openScreenshot" aria-label="Ampliar captura do aplicativo"><Icon name="expand" size={20}/></button></figure>
+        <div class="gallery-caption"><p><span x-text="screen.caption">Seu ambiente, visto de perto.</span></p><span>Capturas do aplicativo nativo, em ambiente de demonstração isolado.</span></div>
+        <ul class="capability-list" aria-label="Recursos do desktop"><li><Icon name="check" size={14}/>Progresso e cancelamento</li><li><Icon name="check" size={14}/>Seleção local e global</li><li><Icon name="check" size={14}/>Catálogo e histórico</li><li><Icon name="check" size={14}/>Verificação e reparo</li></ul>
+        <dialog id="screenshot-dialog" class="screenshot-dialog" @click="backdrop" aria-label="Captura ampliada do Verman"><button class="dialog-close icon-button" @click="closeScreenshot" aria-label="Fechar captura ampliada"><Icon name="close" size={24}/></button><img src="/screenshots/visao-geral.png" alt="Captura ampliada do aplicativo Verman" width="1466" height="953"/></dialog>
+      </div>
+    </section>
+
+    <section id="como-funciona" class="how-section section-pad">
+      <div class="container">
+        <div class="section-heading centered"><span class="eyebrow">DO DOWNLOAD AO PRIMEIRO PROJETO</span><h2>Seu próximo setup.<br/>Em três passos.</h2><p>O Verman cuida das versões. Você cuida das ideias.</p></div>
+        <div class="steps-grid">
+          <article class="step"><div class="step-number">01<span></span></div><h3>Instale uma vez.</h3><p>Baixe o instalador. CLI, desktop e documentação vão juntos. Marque a opção de configurar o PATH.</p><a href={download} download class="step-link">Baixar o instalador <Icon name="download" size={16}/></a><div class="step-visual install-visual"><span class="install-logo"><img src="/brand/verman-logo.png" alt="" width="38" height="38"/></span><div><strong>Verman</strong><span>CLI + desktop · Windows x64</span></div><Icon name="check" size={18}/></div></article>
+          <article class="step"><div class="step-number">02<span></span></div><h3>Escolha suas versões.</h3><p>Selecione a pasta do projeto no desktop ou use a CLI. Escolha versões diferentes para projetos diferentes.</p><a href="/docs/projetos/" class="step-link">Entender projetos </a><div class="step-visual code-visual"><code><span>❯</span> verman use node lts<br/><span>❯</span> verman use php latest</code></div></article>
+          <article class="step"><div class="step-number">03<span></span></div><h3>Continue de onde parou.</h3><p>A seleção fica em <code>.verman.toml</code>. Com os shims no PATH, seus comandos usam as versões daquela pasta.</p><a href="/docs/primeiros-passos/" class="step-link">Abrir primeiros passos </a><div class="step-visual project-visual"><span><Icon name="folder" size={17}/> meu-projeto</span><span><Icon name="code" size={14}/> .verman.toml <i>configurado</i></span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="path-section">
+      <div class="container path-grid">
+        <div><span class="eyebrow">INSTALOU? FALTA SÓ CONECTAR.</span><h2>Um lugar no PATH.<br/>Tudo pronto no terminal.</h2><p>O instalador oferece essa configuração. A pasta <code>bin</code> precisa vir antes de outras instalações para os comandos encontrarem os shims do Verman.</p><a href="/docs/path-e-terminal/" class="text-link">Ver o passo a passo das variáveis </a></div>
+        <div class="path-card"><div class="path-card-title"><span><Icon name="settings" size={17}/> Variáveis de ambiente</span><span class="badge">WINDOWS</span></div><div class="path-row"><span>Variável</span><strong>Path</strong></div><div class="path-value" data-code-block><span>Coloque esta entrada no início:</span><div><code>C:\Program Files\Verman\bin</code><button data-copy class="icon-button" aria-label="Copiar caminho do Verman"><Icon name="copy" size={17}/></button></div></div><p><Icon name="check" size={15}/> Reabra o terminal e o editor depois de instalar.</p><small>Escolheu outra pasta? Use a subpasta <code>bin</code> dela. Preserve as outras entradas do PATH.</small></div>
+      </div>
+    </section>
+
+    <section class="docs-section section-pad">
+      <div class="container docs-promo">
+        <div><span class="eyebrow"><Icon name="book" size={16}/> SEM MANUAL COMPLICADO</span><h2>Uma dúvida?<br/>Seu próximo passo está aqui.</h2><p>Guias curtos, comandos para copiar e explicações<br class="desktop-break"/> para entender o que está acontecendo.</p><a class="button button-outline" href="/docs/">Explorar a documentação </a></div>
+        <div class="doc-shortcuts"><a href="/docs/instalacao/"><span class="shortcut-icon"><Icon name="download"/></span><div><strong>Instalar e começar</strong><span>Do download ao primeiro comando.</span></div></a><a href="/docs/variaveis-de-ambiente/"><span class="shortcut-icon"><Icon name="settings"/></span><div><strong>PATH e variáveis de ambiente</strong><span>O que configurar e o que já vem pronto.</span></div></a><a href="/docs/comandos/"><span class="shortcut-icon"><Icon name="terminal"/></span><div><strong>Sua CLI, sem mistério</strong><span>Instalar, selecionar, executar e remover.</span></div></a><a href="/docs/diagnostico/"><span class="shortcut-icon"><Icon name="shield"/></span><div><strong>Resolver um problema</strong><span>Outra versão apareceu? Comece por aqui.</span></div></a></div>
+      </div>
+    </section>
+
+    <section class="faq-section section-pad"><div class="container faq-grid"><div><span class="eyebrow">ANTES DE COMEÇAR</span><h2>Bom saber.</h2><p>Respostas diretas para as dúvidas<br/>que aparecem no primeiro setup.</p><a href="/docs/" class="text-link">Todas as respostas nos guias </a></div><div class="faq-list">{questions.map(([question,answer]) => <details><summary>{question}<span class="faq-plus">+</span></summary><p>{answer}</p></details>)}</div></div></section>
+
+    <section id="download" class="download-section"><div class="container download-inner"><div><span class="eyebrow">SEU AMBIENTE, DO SEU JEITO.</span><h2>Pronto para voltar<br/>ao que importa?</h2><p>Baixe o Verman. Escolha suas versões. E bora criar.</p></div><div class="download-actions"><a href={download} download class="button button-mint"><Icon name="windows" size={21}/> Baixar para Windows <Icon name="download" size={19}/></a><span>v{product.version} · x64 · {(release.bytes / 1024 / 1024).toFixed(1).replace('.', ',')} MiB · Prévia</span><a href={`${download}.sha256`} download class="checksum-link">SHA-256 do instalador </a><small>Pacote de avaliação sem assinatura digital.<br/><a href="/docs/instalacao/">Requisitos e detalhes desta prévia.</a></small></div></div></section>
+  </main>
+</Base>
