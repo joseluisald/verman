@@ -36,15 +36,29 @@ $env:VERMAN_INSTALLER_PATH = 'D:\Pacotes\Verman-Setup-0.5.2-windows-amd64.exe'
 
 Os downloads e a cópia do logo em `public/` são gerados e ignorados pelo Git; não são placeholders. O build os inclui no site, de modo que os botões de download funcionam localmente. Atualize `src/data/product.json` ao mudar a versão distribuída.
 
-## Publicar depois
+## Deploy no Coolify com Railpack
 
-Nenhuma hospedagem foi criada. Para uma futura publicação estática, configure `SITE_URL` com a URL HTTPS real antes do build; isso ativa os links canônicos. O provedor precisa servir os arquivos grandes em `downloads/` e as rotas estáticas de `dist/`, incluindo `404.html`.
+Selecione o repositório e a branch que contém a LP. O Railpack pode usar só esta pasta como contexto de build.
+
+| Campo | Valor |
+| --- | --- |
+| Build strategy | Railpack |
+| Site type | Static |
+| Base directory | `/verman-frontend-lp` |
+| Publish directory | `/dist` |
+| Web server e porta | `nginx:alpine`, porta `80` |
+| Install command | `npm ci --ignore-scripts` |
+| Build command | `npm run build` |
+
+Marque `RAILPACK_NODE_VERSION=24`, `SITE_URL` com a URL HTTPS do domínio, e `VERMAN_SITE_ONLY=1` como disponíveis durante o build. Em um clone do Git, o pacote Windows local está ausente. Nesse modo, o site é gerado com os guias, as capturas e o logo, e sem publicar links de download ou checksum.
+
+Para publicar também o download, disponibilize o instalador e o respectivo `.sha256` em um diretório acessível durante o build, defina `VERMAN_INSTALLER_PATH` com o caminho do instalador nesse ambiente e remova `VERMAN_SITE_ONLY`. O build verifica o checksum antes de copiar o executável para a saída estática.
 
 O pacote 0.5.2 é de revisão: assinatura, validação em Windows limpo e licença comercial do compilador Inno ainda precisam ser concluídas antes de anunciar uma distribuição comercial pronta. O download na página é identificado como prévia.
 
 ## Imagens e conteúdo
 
-- Logo: fonte original em `../desktop/frontend/src/assets/verman-logo.png`.
+- Logo: fonte original em `../desktop/frontend/src/assets/verman-logo.png`. Para builds isolados, `assets/verman-logo.png` guarda a exportação de 256 px feita por `go run ./tools/windowsicon -out <diretório-temporário>`.
 - Prints: `public/screenshots/`, capturados diretamente do EXE Wails 0.5.2 em perfil isolado. Veja `proveniencia.json`.
 - Não usam a prévia de navegador nem dados desenhados para parecerem capturas.
 - Exemplos de versões na documentação ilustram o formato; o catálogo do Verman é a referência de disponibilidade.

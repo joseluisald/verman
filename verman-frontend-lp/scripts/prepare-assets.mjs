@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir, copyFile, stat } from "node:fs/promises";
+import { readFile, writeFile, mkdir, copyFile, stat, rm } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -29,14 +29,20 @@ const exportedLogo = path.join(
   "dist/windows/payload/assets/verman-logo.png",
 );
 const [originalLogoInfo, exportedLogoInfo] = await Promise.all([
-  stat(originalLogo),
+  stat(originalLogo).catch((error) => {
+    if (error.code !== "ENOENT") throw error;
+    return null;
+  }),
   stat(exportedLogo).catch(() => null),
 ]);
 // Reutiliza a exportação de 256 px do mesmo logo, quando não está desatualizada.
-const logoSource =
-  exportedLogoInfo && exportedLogoInfo.mtimeMs >= originalLogoInfo.mtimeMs
-    ? exportedLogo
-    : originalLogo;
+let logoSource = path.join(root, "assets/verman-logo.png");
+if (originalLogoInfo) {
+  logoSource =
+    exportedLogoInfo && exportedLogoInfo.mtimeMs >= originalLogoInfo.mtimeMs
+      ? exportedLogo
+      : originalLogo;
+}
 await copyFile(logoSource, path.join(brand, "verman-logo.png"));
 const fontLicenses = await Promise.all(
   ["manrope", "dm-sans", "jetbrains-mono"].map(async (font) => {
@@ -48,6 +54,18 @@ const fontLicenses = await Promise.all(
   }),
 );
 await writeFile(path.join(licenses, "fontes.txt"), fontLicenses.join("\n\n"));
+
+const installer = path.join(downloads, product.filename);
+const release = path.join(downloads, "release.json");
+if (process.env.VERMAN_SITE_ONLY === "1") {
+  await Promise.all([
+    rm(installer, { force: true }),
+    rm(`${installer}.sha256`, { force: true }),
+  ]);
+  await writeFile(release, JSON.stringify({ ...product, bytes: null }) + "\n");
+  console.log("Logo e fontes preparados para o site sem instalador.");
+  process.exit(0);
+}
 
 try {
   const metadata = await stat(source);
@@ -61,13 +79,13 @@ try {
   const sha256 = hash.digest("hex");
   if (!/^[a-f0-9]{64}$/i.test(expected) || expected.toLowerCase() !== sha256)
     throw new Error("SHA-256 do instalador não confere.");
-  await copyFile(source, path.join(downloads, product.filename));
+  await copyFile(source, installer);
   await writeFile(
     path.join(downloads, `${product.filename}.sha256`),
     `${sha256}  ${product.filename}\n`,
   );
   await writeFile(
-    path.join(downloads, "release.json"),
+    release,
     JSON.stringify({ ...product, bytes: metadata.size, sha256 }, null, 2) +
       "\n",
   );
