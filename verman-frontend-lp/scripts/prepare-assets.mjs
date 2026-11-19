@@ -9,9 +9,6 @@ const repo = path.resolve(root, "..");
 const product = JSON.parse(
   await readFile(path.join(root, "src/data/product.json"), "utf8"),
 );
-const source = process.env.VERMAN_INSTALLER_PATH
-  ? path.resolve(process.env.VERMAN_INSTALLER_PATH)
-  : path.join(repo, "dist", product.filename);
 const downloads = path.join(root, "public/downloads");
 const brand = path.join(root, "public/brand");
 const licenses = path.join(root, "public/licenses");
@@ -68,7 +65,18 @@ if (process.env.VERMAN_SITE_ONLY === "1") {
 }
 
 try {
-  const metadata = await stat(source);
+  const bundledInstaller = path.join(root, "assets/installers", product.filename);
+  let source = process.env.VERMAN_INSTALLER_PATH
+    ? path.resolve(process.env.VERMAN_INSTALLER_PATH)
+    : bundledInstaller;
+  let metadata;
+  try {
+    metadata = await stat(source);
+  } catch (error) {
+    if (process.env.VERMAN_INSTALLER_PATH || error.code !== "ENOENT") throw error;
+    source = path.join(repo, "dist", product.filename);
+    metadata = await stat(source);
+  }
   if (!metadata.isFile())
     throw new Error("O instalador precisa ser um arquivo regular.");
   const expected = (await readFile(`${source}.sha256`, "utf8"))
@@ -94,6 +102,6 @@ try {
   );
 } catch (error) {
   throw new Error(
-    `Não foi possível preparar o download: ${error.message}\nGere o pacote na raiz com scripts/build-windows.ps1 -Version ${product.version} ou informe VERMAN_INSTALLER_PATH e seu arquivo .sha256.`,
+    `Não foi possível preparar o download: ${error.message}\nInclua o instalador e seu .sha256 em assets/installers, gere o pacote na raiz com scripts/build-windows.ps1 -Version ${product.version} ou informe VERMAN_INSTALLER_PATH.`,
   );
 }

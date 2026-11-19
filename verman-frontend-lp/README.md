@@ -22,7 +22,7 @@ O site pronto fica em `dist/` desta pasta. O build verifica os tipos antes de ge
 
 ## Download do instalador
 
-Antes de `dev` e `build`, o script prepara o logo e o instalador, conferindo o arquivo `.sha256`. Por padrão usa `../dist/Verman-Setup-0.5.2-windows-amd64.exe`. Gere esse pacote na raiz do repositório, se ainda não existir:
+Antes de `dev` e `build`, o script prepara o logo e verifica o SHA-256 do instalador em `assets/installers/`. Se a versão de `src/data/product.json` ainda não estiver nessa pasta, o script procura o build local em `../dist/`. Para gerar o pacote na raiz do repositório:
 
 ```powershell
 .\scripts\build-windows.ps1 -Version 0.5.2
@@ -34,7 +34,7 @@ Para usar outra localização, informe o caminho completo e mantenha o `.sha256`
 $env:VERMAN_INSTALLER_PATH = 'D:\Pacotes\Verman-Setup-0.5.2-windows-amd64.exe'
 ```
 
-Os downloads e a cópia do logo em `public/` são gerados e ignorados pelo Git; não são placeholders. O build os inclui no site, de modo que os botões de download funcionam localmente. Atualize `src/data/product.json` ao mudar a versão distribuída.
+A cada versão distribuída, atualize `src/data/product.json` e copie o novo instalador e seu `.sha256` de `../dist/` para `assets/installers/`. O build gera as cópias públicas em `public/downloads/`.
 
 ## Deploy no Coolify com Railpack
 
@@ -50,9 +50,7 @@ Selecione o repositório e a branch que contém a LP. O Railpack pode usar só e
 | Install command | `npm ci --ignore-scripts` |
 | Build command | `npm run build` |
 
-Marque `RAILPACK_NODE_VERSION=24`, `SITE_URL` com a URL HTTPS do domínio, e `VERMAN_SITE_ONLY=1` como disponíveis durante o build. Em um clone do Git, o pacote Windows local está ausente. Nesse modo, o site é gerado com os guias, as capturas e o logo, e sem publicar links de download ou checksum.
-
-Para publicar também o download, disponibilize o instalador e o respectivo `.sha256` em um diretório acessível durante o build, defina `VERMAN_INSTALLER_PATH` com o caminho do instalador nesse ambiente e remova `VERMAN_SITE_ONLY`. O build verifica o checksum antes de copiar o executável para a saída estática.
+Marque `RAILPACK_NODE_VERSION=24` e `SITE_URL` com a URL HTTPS do domínio como disponíveis durante o build. Se o modo sem instalador foi usado num deploy anterior, remova `VERMAN_SITE_ONLY=1` do campo **Build command** e das variáveis de build. Com `npm run build`, o site é gerado com o instalador versionado.
 
 O pacote 0.5.2 é de revisão: assinatura, validação em Windows limpo e licença comercial do compilador Inno ainda precisam ser concluídas antes de anunciar uma distribuição comercial pronta. O download na página é identificado como prévia.
 
