@@ -9,7 +9,7 @@ verman use bun latest
 bun --version
 ```
 
-Troque `bun` pelo nome abaixo. `use` baixa se necessário e salva a versão exata no projeto; `global` define o padrão. O instalador deve colocar `C:\Program Files\Verman\bin` no início do PATH. Reabra terminal/editor; se necessário, reinicie o PC.
+Troque `bun` pelo nome abaixo. `use` baixa se necessário e salva a versão exata no projeto. `global` define o padrão. Por padrão, o instalador adiciona `C:\verman\bin` ao PATH do usuário. Reabra o terminal e o editor.
 
 | Nome no Verman | Comandos | Observação |
 | --- | --- | --- |
@@ -27,7 +27,23 @@ Troque `bun` pelo nome abaixo. `use` baixa se necessário e salva a versão exat
 | vcpkg | vcpkg | Ferramenta e bundle oficiais; builds exigem Git/CMake/compiladores. |
 | chocolatey | choco, chocolatey | CLI portátil isolada; não importa o Chocolatey existente. |
 
-Para instalar Yarn/Composer:
+## PHP com erro de certificado SSL/TLS
+
+Se PHP ou Composer informar `unable to get local issuer certificate` ou erro cURL 60, [baixe o cacert.pem](https://verman.jlacode.com.br/cacert.pem). O arquivo também está disponível na [origem oficial do cURL](https://curl.se/docs/caextract.html). Salve-o em uma pasta do seu perfil, por exemplo `%USERPROFILE%\.verman\installs\php\cacert\cacert.pem`.
+
+No diretório do projeto, rode `verman exec -- php --ini` e abra o arquivo indicado em **Loaded Configuration File**. Ajuste as diretivas nas seções existentes do `php.ini`. Substitua o caminho de exemplo pelo caminho absoluto do arquivo que você salvou.
+
+```ini
+[curl]
+curl.cainfo = "C:\Users\SEU_USUARIO\.verman\installs\php\cacert\cacert.pem"
+
+[openssl]
+openssl.cafile = "C:\Users\SEU_USUARIO\.verman\installs\php\cacert\cacert.pem"
+```
+
+Confira os valores com `verman exec -- php -i | Select-String 'curl.cainfo|openssl.cafile'` e repita o comando que falhou. Mantenha a verificação TLS habilitada.
+
+## Composer e Yarn
 
 ```powershell
 verman use node lts

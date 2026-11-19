@@ -1,5 +1,5 @@
 #ifndef ProductVersion
-  #define ProductVersion "0.5.2"
+  #define ProductVersion "0.5.3"
 #endif
 #ifndef PayloadDir
   #error Informe /DPayloadDir com a pasta preparada pelo build-windows.ps1
@@ -13,10 +13,11 @@ AppId={{A18A16A0-15A7-41DA-9732-65FD2D06B62A}
 AppName=Verman
 AppVersion={#ProductVersion}
 AppPublisher=Verman
-DefaultDirName={autopf}\Verman
+DefaultDirName={code:DefaultInstallDir}
+UsePreviousAppDir=no
 DefaultGroupName=Verman
 DisableProgramGroupPage=yes
-PrivilegesRequired=admin
+PrivilegesRequired=lowest
 ArchitecturesAllowed=x64os
 ArchitecturesInstallIn64BitMode=x64os
 MinVersion=10.0.17763
@@ -40,7 +41,7 @@ DisableWelcomePage=no
 Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
 
 [Tasks]
-Name: "path"; Description: "Adicionar {app}\bin ao início do PATH do sistema (recomendado)"; GroupDescription: "Para usar verman e as ferramentas selecionadas no terminal:"; Flags: checkedonce
+Name: "path"; Description: "Adicionar {app}\bin ao PATH do usuário (recomendado)"; GroupDescription: "Para usar verman e as ferramentas selecionadas no terminal:"; Flags: checkedonce
 Name: "desktopicon"; Description: "Criar atalho na área de trabalho"; GroupDescription: "Atalhos:"; Flags: unchecked
 
 [Files]
@@ -60,8 +61,8 @@ Name: "{group}\Desinstalar Verman"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\Verman"; Filename: "{app}\verman-desktop.exe"; WorkingDir: "{app}"; IconFilename: "{app}\assets\verman.ico"; Tasks: desktopicon
 
 [Registry]
-Root: HKLM; Subkey: "Software\Verman"; ValueType: string; ValueName: "InstallDir"; ValueData: "{app}"; Flags: uninsdeletekeyifempty uninsdeletevalue
-Root: HKLM; Subkey: "Software\Verman"; ValueType: string; ValueName: "Version"; ValueData: "{#ProductVersion}"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "Software\Verman"; ValueType: string; ValueName: "InstallDir"; ValueData: "{app}"; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCU; Subkey: "Software\Verman"; ValueType: string; ValueName: "Version"; ValueData: "{#ProductVersion}"; Flags: uninsdeletevalue
 
 [Run]
 Filename: "{app}\verman-desktop.exe"; Description: "Abrir Verman"; Flags: nowait postinstall skipifsilent runasoriginaluser; Check: HasWebView
@@ -69,13 +70,19 @@ Filename: "{app}\docs\PRIMEIROS_PASSOS.html"; Description: "Abrir guia de config
 Filename: "{app}\docs\index.html"; Description: "Abrir documentação offline"; Flags: shellexec postinstall skipifsilent runasoriginaluser unchecked
 Filename: "https://developer.microsoft.com/microsoft-edge/webview2/"; Description: "Obter Microsoft WebView2 para abrir o desktop"; Flags: shellexec postinstall skipifsilent runasoriginaluser; Check: MissingWebView
 
-[UninstallRun]
-Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File ""{app}\scripts\remove-path.ps1"" -BinDir ""{app}\bin"""; Flags: runhidden waituntilterminated; Check: ManagedPath; RunOnceId: "RemoveVermanManagedPath"
-
 [Code]
 var GuideButton, DocsButton: TNewButton;
     PrereqLabel: TNewStaticText;
     PathConfigured: Boolean;
+
+function DefaultInstallDir(Param: String): String;
+var PreviousDir: String;
+begin
+  Result := 'C:\verman';
+  if RegQueryStringValue(HKCU, 'Software\Verman', 'InstallDir', PreviousDir) and
+    FileExists(AddBackslash(PreviousDir) + 'verman.exe') then
+    Result := PreviousDir;
+end;
 
 function HasWebView: Boolean;
 var Version: String;
@@ -92,7 +99,7 @@ end;
 function ManagedPath: Boolean;
 var Value: Cardinal;
 begin
-  Result := RegQueryDWordValue(HKLM, 'Software\Verman', 'PathManaged', Value) and (Value = 1);
+  Result := RegQueryDWordValue(HKCU, 'Software\Verman', 'PathManaged', Value) and (Value = 1);
 end;
 
 procedure ExtractHelp;
@@ -142,17 +149,19 @@ begin
     PrereqLabel.Caption := 'Microsoft WebView2 não foi encontrado. A CLI funciona sem ele. Ao concluir, você poderá abrir a página oficial para instalar o runtime exigido pelo desktop.';
 end;
 
-function NextButtonClick(CurPageID: Integer): Boolean;
-var Target, ProtectedRoot: String;
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+var LegacyDir: String;
 begin
-  Result := True;
-  if (CurPageID = wpSelectTasks) and WizardIsTaskSelected('path') then begin
-    Target := Lowercase(AddBackslash(ExpandFileName(WizardDirValue)));
-    ProtectedRoot := Lowercase(AddBackslash(ExpandConstant('{autopf}')));
-    if Pos(ProtectedRoot, Target) <> 1 then begin
-      MsgBox('Para priorizar shims no PATH do sistema, escolha uma pasta protegida dentro de Program Files. Ou desmarque a configuração do PATH.', mbError, MB_OK);
-      Result := False;
+  Result := '';
+  if RegQueryStringValue(HKLM64, 'Software\Verman', 'InstallDir', LegacyDir) and
+    FileExists(AddBackslash(LegacyDir) + 'verman.exe') then begin
+    Log('Instalação anterior para todos os usuários em: ' + LegacyDir);
+    if CompareText(AddBackslash(ExpandFileName(WizardDirValue)), AddBackslash(ExpandFileName(LegacyDir))) = 0 then begin
+      Result := 'O destino já contém uma instalação para todos os usuários. Desinstale a edição anterior em Aplicativos instalados ou escolha outra pasta.';
+      Exit;
     end;
+    if not WizardSilent then
+      MsgBox('Foi encontrada uma instalação anterior para todos os usuários. Ela pode ter prioridade no PATH. Para migrar, desinstale a edição anterior em Aplicativos instalados. Os runtimes e os projetos serão preservados.', mbInformation, MB_OK);
   end;
 end;
 
@@ -161,9 +170,9 @@ var ExitCode: Integer;
 begin
   if (CurStep = ssPostInstall) and WizardIsTaskSelected('path') then begin
     if Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
-      ExpandConstant('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{app}\scripts\setup-path.ps1" -Scope Machine -VermanExecutable "{app}\verman.exe" -BinDir "{app}\bin"'),
+      ExpandConstant('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{app}\scripts\setup-path.ps1" -Scope User -AllowMachinePathConflicts -VermanExecutable "{app}\verman.exe" -BinDir "{app}\bin"'),
       '', SW_HIDE, ewWaitUntilTerminated, ExitCode) and (ExitCode = 0) then begin
-      RegWriteDWordValue(HKLM, 'Software\Verman', 'PathManaged', 1);
+      RegWriteDWordValue(HKCU, 'Software\Verman', 'PathManaged', 1);
       PathConfigured := True;
       Log('PATH do Verman configurado. Outros terminais precisam ser reabertos uma vez.');
     end else begin
@@ -174,10 +183,20 @@ begin
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var ExitCode: Integer;
 begin
+  if (CurUninstallStep = usUninstall) and ManagedPath then begin
+    if not Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
+      ExpandConstant('-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{app}\scripts\remove-path.ps1" -Scope User -BinDir "{app}\bin"'),
+      '', SW_HIDE, ewWaitUntilTerminated, ExitCode) or (ExitCode <> 0) then begin
+      Log('Falha ao remover a entrada dos shims do PATH do usuário.');
+      if not UninstallSilent then
+        MsgBox('Se a entrada ainda estiver no PATH do usuário, remova apenas esta pasta: ' + ExpandConstant('{app}\bin'), mbInformation, MB_OK);
+    end;
+  end;
   if CurUninstallStep = usPostUninstall then begin
-    RegDeleteValue(HKLM, 'Software\Verman', 'PathManaged');
-    RegDeleteKeyIfEmpty(HKLM, 'Software\Verman');
+    RegDeleteValue(HKCU, 'Software\Verman', 'PathManaged');
+    RegDeleteKeyIfEmpty(HKCU, 'Software\Verman');
   end;
 end;
 
@@ -185,11 +204,11 @@ procedure CurPageChanged(CurPageID: Integer);
 begin
   if CurPageID = wpFinished then begin
     if PathConfigured then
-      WizardForm.FinishedLabel.Caption := 'Verman instalado. Esta pasta foi adicionada ao início do PATH do sistema:' + #13#10#13#10 +
+      WizardForm.FinishedLabel.Caption := 'Verman instalado. Esta pasta foi adicionada ao PATH do usuário:' + #13#10#13#10 +
         ExpandConstant('{app}\bin') + #13#10#13#10 + 'Reabra o terminal e o editor. Se ainda não funcionar, reinicie o PC. Depois, execute: verman --version'
     else
       WizardForm.FinishedLabel.Caption := 'Verman instalado. O PATH não foi configurado nesta execução.' + #13#10#13#10 +
-        'Para usar a CLI, coloque esta pasta no início do PATH do sistema:' + #13#10 + ExpandConstant('{app}\bin') + #13#10#13#10 +
+        'Para usar a CLI, adicione esta pasta ao PATH do usuário:' + #13#10 + ExpandConstant('{app}\bin') + #13#10#13#10 +
         'Execute novamente o instalador e marque essa opção. Depois, reabra o terminal e o editor.';
   end;
 end;

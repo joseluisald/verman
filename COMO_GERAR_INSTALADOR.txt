@@ -17,30 +17,31 @@ Nao precisa instalar outro Node nem mudar o PATH para npm.cmd.
 No PowerShell, sem precisar de administrador:
 
     cd "D:\Projetos\JLA Code\verman"
-    .\scripts\build-windows.ps1 -Version 0.5.2
+    .\scripts\build-windows.ps1 -Version 0.5.3
 
 O script compila interface, CLI, desktop, documentação e instalador.
 O logo do app tambem e aplicado ao instalador e aos atalhos.
 Para ter o atalho com logo, marque "Criar atalho na area de trabalho" ao instalar.
 Se faltar o compilador, informe seu caminho:
 
-    .\scripts\build-windows.ps1 -Version 0.5.2 -InnoCompiler "C:\Program Files\Inno Setup 7\ISCC.exe"
+    .\scripts\build-windows.ps1 -Version 0.5.3 -InnoCompiler "C:\Program Files\Inno Setup 7\ISCC.exe"
 
 Se o PowerShell bloquear o script:
 
-    powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\build-windows.ps1" -Version 0.5.2
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\build-windows.ps1" -Version 0.5.3
 
 3. INSTALAR
 Abra o arquivo gerado:
 
-    dist\Verman-Setup-0.5.2-windows-amd64.exe
+    dist\Verman-Setup-0.5.3-windows-amd64.exe
 
-Aceite o pedido de administrador e deixe marcada a opção de adicionar
-a pasta bin ao PATH do sistema. Na instalação padrão, o caminho é:
+Abra o instalador normalmente e deixe marcada a opção de adicionar
+a pasta bin ao PATH do usuário. Na instalação padrão, o caminho é:
 
-    C:\Program Files\Verman\bin
+    C:\verman\bin
 
-Essa pasta deve ficar antes dos caminhos de outros PHP, Node ou Python.
+Entradas do PATH do sistema podem ter prioridade. Use verman exec
+para rodar a versão selecionada se houver conflito.
 Se instalar em outra pasta, use a subpasta bin dela no PATH.
 O build sozinho não configura o PATH: isso acontece na instalação.
 

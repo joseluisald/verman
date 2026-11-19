@@ -2,13 +2,13 @@
 
 ## 1. Instale e configure o PATH
 
-Abra o instalador e mantenha marcada a opção de adicionar a pasta `bin` ao PATH do sistema. Na instalação padrão, ela adiciona:
+Abra o instalador e mantenha marcada a opção de adicionar a pasta `bin` ao PATH do usuário. Na instalação padrão, ela adiciona:
 
 ```text
-C:\Program Files\Verman\bin
+C:\verman\bin
 ```
 
-Essa pasta deve ficar **antes dos caminhos de outros PHP, Node ou Python**. Se instalar em outra pasta, use a subpasta `bin` dela.
+O instalador usa `C:\verman` por padrão e pode gravar onde a conta tiver acesso. Se escolher outra pasta, use a subpasta `bin` dela. Entradas no PATH do sistema podem preceder os shims. Nesse caso, `verman exec -- php -v` usa a versão selecionada.
 
 **Feche e abra novamente o terminal e o editor.** Confira:
 
@@ -35,11 +35,11 @@ python --version
 
 ## Se não funcionar
 
-1. Confira se `C:\Program Files\Verman\bin` está no início do PATH do sistema.
+1. Confira se `C:\verman\bin` está no PATH do usuário.
 2. Reabra o terminal e o editor. Se ainda não reconhecer os comandos ou mostrar a versão antiga, **reinicie o PC** e teste novamente.
 3. Se persistir, execute `verman doctor php`. Para configurar o PATH depois, execute novamente o instalador e marque essa opção.
 
-O desktop precisa de WebView2; o instalador avisa se estiver ausente. O PHP pode precisar do Visual C++ Redistributable x64. Para trocar o Python, desative o venv/Conda primeiro.
+O desktop precisa de WebView2; o instalador avisa se estiver ausente. O PHP pode precisar do Visual C++ Redistributable x64. Para erros de certificado SSL/TLS, veja a seção de PHP em [Ferramentas e dependências](FERRAMENTAS.md). Para trocar o Python, desative o venv/Conda primeiro.
 
 Não precisa instalar Go ou Node para usar o pacote pronto. Seus runtimes e projetos são preservados ao desinstalar o aplicativo.
 

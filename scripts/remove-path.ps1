@@ -1,23 +1,32 @@
-param([Parameter(Mandatory=$true)][string]$BinDir,[switch]$Preview)
+param(
+    [Parameter(Mandatory=$true)][string]$BinDir,
+    [ValidateSet('User','Machine')][string]$Scope = 'Machine',
+    [switch]$Preview
+)
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
 $bin=[IO.Path]::GetFullPath($BinDir).TrimEnd('\')
-$protectedRoot=[IO.Path]::GetFullPath($env:ProgramFiles).TrimEnd('\')+'\'
-if (-not $bin.StartsWith($protectedRoot,[StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetFileName($bin) -ine 'bin') { throw 'Destino de desinstalacao deve ser a pasta bin protegida dentro de Program Files.' }
-$keyPath='SYSTEM\CurrentControlSet\Control\Session Manager\Environment'
-if ($Preview) {
-    $key=[Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($keyPath,$false)
+if ([IO.Path]::GetFileName($bin) -ine 'bin') { throw 'Destino de desinstalacao deve ser a pasta bin dos shims.' }
+if ($Scope -eq 'Machine') {
+    $protectedRoot=[IO.Path]::GetFullPath($env:ProgramFiles).TrimEnd('\')+'\'
+    if (-not $bin.StartsWith($protectedRoot,[StringComparison]::OrdinalIgnoreCase)) { throw 'No escopo Machine use a pasta bin protegida dentro de Program Files.' }
+    $hive=[Microsoft.Win32.Registry]::LocalMachine
+    $keyPath='SYSTEM\CurrentControlSet\Control\Session Manager\Environment'
 } else {
-    if (-not (Test-Path -LiteralPath (Join-Path $bin '.verman-shims.json') -PathType Leaf)) { throw 'Manifesto do Verman ausente; PATH preservado.' }
-    $key=[Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($keyPath,$true)
+    $hive=[Microsoft.Win32.Registry]::CurrentUser
+    $keyPath='Environment'
 }
+if (-not $Preview -and -not (Test-Path -LiteralPath (Join-Path $bin '.verman-shims.json') -PathType Leaf)) { throw 'Manifesto do Verman ausente; PATH preservado.' }
+$key=$hive.OpenSubKey($keyPath, -not $Preview)
+if ($null -eq $key) { return }
 try {
     $oldPath=[string]$key.GetValue('Path','',[Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames)
     $parts=@($oldPath -split ';' | Where-Object { $_.Trim('"').TrimEnd('\') -ine $bin })
     $nextPath=$parts -join ';'
     if ($Preview) { Write-Output 'Previa: somente a entrada exata dos shims seria removida. Nenhuma alteracao aplicada.'; return }
+    if ($oldPath -ceq $nextPath) { return }
     $kind=$key.GetValueKind('Path')
-    $backup=@{path=$oldPath;kind=[string]$kind;scope='Machine';bin=$bin} | ConvertTo-Json
+    $backup=@{path=$oldPath;kind=[string]$kind;scope=$Scope;bin=$bin} | ConvertTo-Json
     [IO.File]::WriteAllText((Join-Path $bin ('path-uninstall-backup-'+[Guid]::NewGuid().ToString('N')+'.json')),$backup)
     $key.SetValue('Path',$nextPath,$kind)
 } finally { $key.Dispose() }

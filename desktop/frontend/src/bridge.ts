@@ -41,7 +41,7 @@ const demo: Bridge = {
           path_executable:
             language === "php"
               ? "D:\\PHP\\php-8.3.7\\php.exe"
-              : "C:\\Program Files\\Verman\\bin\\" + language + ".exe",
+              : "C:\\verman\\bin\\" + language + ".exe",
           expected_executable:
             "C:\\Users\\voce\\.verman\\installs\\" +
             language +
@@ -148,8 +148,8 @@ const demo: Bridge = {
   },
   async SetupInfo() {
     return {
-      version: "0.5.2 · prévia",
-      cli_path: "C:\\Program Files\\Verman\\verman.exe",
+      version: "0.5.3 · prévia",
+      cli_path: "C:\\verman\\verman.exe",
       cli_exists: true,
       shims: Object.fromEntries(languages.map(language => [language, language !== "php"])) as Record<Language, boolean>,
       message: "Reabra terminais e editor depois de configurar o PATH.",

@@ -1,5 +1,5 @@
 param(
-    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version='0.5.2',
+    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version='0.5.3',
     [string]$InnoCompiler,
     [switch]$SkipNpmInstall,
     [switch]$SkipInstaller

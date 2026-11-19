@@ -2,6 +2,7 @@ param(
     [ValidateSet('User','Machine')][string]$Scope = 'User',
     [string]$VermanExecutable,
     [string]$BinDir,
+    [switch]$AllowMachinePathConflicts,
     [switch]$Preview
 )
 $ErrorActionPreference = 'Stop'
@@ -29,7 +30,10 @@ foreach ($entry in ($machinePath -split ';')) {
 Write-Output "Escopo: $Scope; shims: $bin"
 if ($Scope -eq 'User' -and $conflicts.Count -gt 0) {
     Write-Output ('Conflitos no PATH do sistema: ' + ($conflicts -join ', '))
-    throw 'O PATH do usuario nao tem prioridade sobre o do sistema. Use -Scope Machine em PowerShell administrador, ou configure a prioridade manualmente. Nenhuma alteracao foi aplicada.'
+    if (-not $AllowMachinePathConflicts) {
+        throw 'O PATH do usuario nao tem prioridade sobre o do sistema. Use -Scope Machine em PowerShell administrador, ou configure a prioridade manualmente. Nenhuma alteracao foi aplicada.'
+    }
+    Write-Warning 'Comandos no PATH do sistema podem ter prioridade sobre os shims do usuario. Use verman exec para executar a versao selecionada.'
 }
 if ($Preview) { Write-Output 'Previa concluida; arquivos e PATH nao foram alterados.'; return }
 if ($Scope -eq 'Machine') {

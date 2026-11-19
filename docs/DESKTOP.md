@@ -24,14 +24,14 @@ O build reconhece `npm.exe` do Verman e `npm.cmd` do Node tradicional. Se usar V
 O logo é exportado automaticamente para ICO em vários tamanhos e incorporado ao executável do desktop antes de empacotar. O instalador, suas telas, o desinstalador e os atalhos do aplicativo usam o mesmo logo. Para criar o atalho, marque **Criar atalho na área de trabalho** no instalador. O ícone e as imagens são instalados em `{app}\assets`.
 
 ```powershell
-& ./scripts/build-windows.ps1 -Version 0.5.2 -InnoCompiler 'CAMINHO\ISCC.exe'
+& ./scripts/build-windows.ps1 -Version 0.5.3 -InnoCompiler 'CAMINHO\ISCC.exe'
 ```
 
 O script executa npm ci/build, compila CLI e desktop com tags desktop/production, prepara shims em uma pasta do payload (sem mudar o PATH da máquina), renderiza a documentação HTML e compila o instalador. `-SkipInstaller` permite gerar somente o payload. `-SkipNpmInstall` reutiliza dependências já instaladas quando o lockfile não mudou.
 
 Os bundles de frontend são gerados e ignorados no Git; compile a interface antes de compilar/distribuir o desktop. O `.gitkeep` permite compilar os testes Go em um checkout novo, mas não substitui o build da UI. O compilador Inno Setup 7.1.1 usado na revisão local identificou a edição como “Non-commercial use only”; verifique/adquira a licença aplicável antes de produzir uma distribuição comercial. Essa licença do compilador é independente da licença do aplicativo e de suas bibliotecas.
 
-O instalador gerado fica em `dist/Verman-Setup-0.5.2-windows-amd64.exe` e o checksum fica ao lado. O payload em `dist/windows/payload` também pode ser usado para revisão. O build não gera executáveis na raiz.
+O instalador gerado fica em `dist/Verman-Setup-0.5.3-windows-amd64.exe` e o checksum fica ao lado. O payload em `dist/windows/payload` também pode ser usado para revisão. O build não gera executáveis na raiz.
 
 Para desenvolver a interface:
 
@@ -43,15 +43,15 @@ npm run dev
 
 ## Instalar, atualizar e remover
 
-O instalador instala em Program Files e pede administrador. O assistente oferece configuração do PATH, documentação e primeiros passos; o aplicativo é iniciado com a identidade original quando o Windows permite. Inicie o instalador normalmente, sem usar “Executar como administrador” manualmente, para preservar essa identidade antes do UAC.
+O instalador usa `C:\verman` por padrão e roda na conta atual, sem solicitar elevação. Se a política do Windows bloquear a gravação nessa pasta, escolha um diretório em que sua conta possa gravar.
 
-Deixe marcada a opção de adicionar a pasta `bin` ao PATH do sistema. Na instalação padrão, o caminho é **`C:\Program Files\Verman\bin`**, antes de outros PHP, Node ou Python. Se mudar a pasta de instalação, use a subpasta `bin` dela. Reabra o terminal e o editor e confira `verman --version`.
+Deixe marcada a opção de adicionar a pasta `bin` ao PATH do usuário. Na instalação padrão, o caminho é **`C:\verman\bin`**. Ferramentas no PATH do sistema podem ter prioridade. Use `verman exec -- php -v` para executar a versão selecionada. Se mudar a pasta de instalação, use a subpasta `bin` dela. Reabra o terminal e o editor e confira `verman --version`.
 
 A detecção de WebView2 é local. Se estiver ausente, o assistente informa a dependência e oferece a página oficial; nenhum componente externo é baixado/executado silenciosamente como administrador. A CLI e os guias continuam disponíveis.
 
 Se os comandos ainda não forem reconhecidos ou continuarem na versão antiga após reabrir o terminal/editor, reinicie o PC e teste novamente. Esse procedimento funcionou no teste relatado pelo usuário. Se persistir, confira o PATH e execute `verman doctor`.
 
-Atualize executando o instalador da versão nova, fechando o desktop e processos que usem os shims quando solicitado. A configuração do PATH preserva entradas anteriores e faz backup. A desinstalação retira a entrada exata dos shims quando ela foi configurada pelo instalador, remove arquivos/atalhos registrados e preserva `~/.verman` e os projetos. Backups/dados adicionais não registrados podem permanecer na pasta do aplicativo. O PATH dos processos já abertos não pode ser atualizado pelo desinstalador.
+Para migrar da edição instalada para todos os usuários, desinstale a edição antiga em **Aplicativos instalados** antes de instalar a nova. Se sobrar uma entrada no PATH do sistema, remova apenas a pasta `bin` da instalação antiga. Essa alteração pode exigir administrador. Os runtimes e os projetos são preservados. Para atualizar edições por usuário, execute o instalador novo com o desktop fechado. A configuração do PATH preserva entradas anteriores e faz backup. A desinstalação retira a entrada exata dos shims quando ela foi configurada pelo instalador, remove arquivos/atalhos registrados e preserva `~/.verman` e os projetos. Backups/dados adicionais não registrados podem permanecer na pasta do aplicativo. O PATH dos processos já abertos não pode ser atualizado pelo desinstalador.
 
 ## Validação e limites
 
@@ -59,4 +59,4 @@ Testes locais devem usar diretórios e perfis temporários. Não altere o PATH/p
 
 O executável/instalador local ainda não tem assinatura de publicação. A disponibilidade do WebView2 sem ele instalado, os fluxos de UAC, instalação/atualização/remoção e acessibilidade com leitor de tela precisam ser avaliados em VMs Windows limpas antes de um lançamento público.
 
-A landing page foi autorizada e implementada em `verman-frontend-lp`, com Astro, Tailwind CSS e Alpine.js, guias simples e capturas reais do desktop. Consulte o README dessa pasta para rodar localmente e preparar os downloads. Nenhuma hospedagem foi publicada; os critérios de release público continuam pendentes.
+A landing page foi autorizada e implementada em `verman-frontend-lp`, com Astro, Tailwind CSS e Alpine.js, guias simples e capturas reais do desktop. Consulte o README dessa pasta para rodar localmente e preparar os downloads. Os critérios de release público continuam pendentes.

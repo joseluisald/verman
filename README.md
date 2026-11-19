@@ -4,14 +4,14 @@ Gerencie Node.js, PHP, Python, Bun, Go, Deno, Git, Rust, Composer, Yarn, pnpm, v
 
 ## Instalar
 
-1. Abra `dist/Verman-Setup-0.5.2-windows-amd64.exe`.
-2. Deixe marcada a opção de adicionar a pasta `bin` ao início do PATH do sistema.
+1. Abra `dist/Verman-Setup-0.5.3-windows-amd64.exe`.
+2. Deixe marcada a opção de adicionar a pasta `bin` ao PATH do usuário.
 3. Feche e abra novamente o terminal e o editor.
 
-Na instalação padrão, o PATH deve conter esta pasta antes de outros PHP, Node ou Python:
+A CLI e o desktop são instalados por padrão em `C:\verman`, sem solicitação de elevação. A entrada adicionada ao PATH do usuário é:
 
 ```text
-C:\Program Files\Verman\bin
+C:\verman\bin
 ```
 
 Se escolher outra pasta de instalação, use a subpasta `bin` dela. O instalador faz essa configuração quando a opção está marcada.
@@ -37,13 +37,13 @@ python --version
 
 Ou abra **Verman** no menu Iniciar: **Selecionar projeto → Ferramentas → Instalar → Usar no projeto**.
 
-Para consultar versões: `verman list bun --available`. Troque `bun` pelo nome da ferramenta. Composer exige PHP selecionado; Yarn exige Node. [Ferramentas e dependências](docs/FERRAMENTAS.md).
+Para consultar versões: `verman list bun --available`. Troque `bun` pelo nome da ferramenta. Composer exige PHP selecionado; Yarn exige Node. Se aparecer erro de certificado no PHP, veja [como configurar o cacert.pem](docs/FERRAMENTAS.md#php-com-erro-de-certificado-ssltls). [Ferramentas e dependências](docs/FERRAMENTAS.md).
 
 `install` baixa uma versão. `use` salva a escolha do projeto. `global` define o padrão para projetos sem seleção própria. Os shims consultam a seleção a cada execução.
 
 ## Se aparecer outra versão
 
-Confirme a prioridade de `C:\Program Files\Verman\bin` no PATH e reabra o terminal e o editor. Se ainda não funcionar, **reinicie o PC** e teste novamente. Se persistir, execute:
+Confira se `C:\verman\bin` está no PATH do usuário e reabra o terminal e o editor. Entradas do PATH do sistema podem ter prioridade. Use `verman exec -- php -v` para rodar o PHP selecionado. Se ainda não funcionar, **reinicie o PC** e teste novamente. Se persistir, execute:
 
 ```powershell
 verman doctor php
@@ -57,7 +57,7 @@ Para configurar o PATH depois, execute novamente o instalador e marque essa opç
 Tenha Go (versão do `go.mod`), Node/npm e Inno Setup. Na raiz:
 
 ```powershell
-.\scripts\build-windows.ps1 -Version 0.5.2
+.\scripts\build-windows.ps1 -Version 0.5.3
 ```
 
 O script gera interface, CLI, desktop, documentação e instalador em `dist`. O build sozinho não altera o PATH. Passo a passo: [COMO_GERAR_INSTALADOR.txt](COMO_GERAR_INSTALADOR.txt).
@@ -77,4 +77,4 @@ O pacote local é para revisão. Assinatura, validação em Windows limpo e lice
 
 ## Landing page
 
-O site e os guias estão em [verman-frontend-lp](verman-frontend-lp/README.md), com Astro, Tailwind CSS, Alpine.js e capturas reais do desktop. Na pasta, execute `npm ci --ignore-scripts` e `npm run dev`. Para gerar o site estático, use `npm run build`. O instalador atual precisa estar em `dist` na raiz para preparar o download. Nenhuma hospedagem é publicada automaticamente.
+O site e os guias estão em [verman-frontend-lp](verman-frontend-lp/README.md), com Astro, Tailwind CSS, Alpine.js e capturas reais do desktop. Na pasta, execute `npm ci --ignore-scripts` e `npm run dev`. Para gerar o site estático, use `npm run build`. O instalador da LP é versionado em `verman-frontend-lp/assets/installers/`. Nenhuma hospedagem é publicada automaticamente.

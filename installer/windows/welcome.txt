@@ -2,11 +2,11 @@ Verman — CLI e Desktop
 
 O instalador inclui o app, a CLI e a documentação offline.
 
-Deixe marcada a opção de configurar o PATH do sistema. Na instalação padrão, esta pasta será colocada primeiro:
+Deixe marcada a opção de configurar o PATH do usuário. Na instalação padrão, esta pasta será adicionada:
 
-C:\Program Files\Verman\bin
+C:\verman\bin
 
-Se escolher outra pasta de instalação, será usada a subpasta bin dela.
+Se o Windows bloquear a gravação em C:\verman, escolha uma pasta em que sua conta possa gravar. O instalador usa a subpasta bin do local escolhido.
 
 Após instalar, feche e abra novamente o terminal e o editor. Se ainda não reconhecer os comandos ou mostrar a versão antiga, reinicie o PC. Confira:
 

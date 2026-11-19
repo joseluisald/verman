@@ -24,6 +24,7 @@ Falhas HTTP/limites de API têm código e orientação; não há repetição aut
 ## Falhas e recuperação
 
 - Divergência de versão: `verman doctor php`, depois confira shims/alias/PATH. `verman exec -- php -v` ajuda a isolar o problema.
+- PHP ou Composer com erro cURL 60: veja a seção sobre `cacert.pem` em [Ferramentas e dependências](FERRAMENTAS.md).
 - Arquivos alterados: `verman verify php VERSAO`; para reinstalar, `verman repair php VERSAO`. O reparo preserva ini/conf.d e pacotes/scripts Python conforme os limites do README.
 - Operação interrompida: `verman recover php VERSAO`. Feche processos que usam o runtime antes de reparar/remover. Não apague os arquivos `.lck`.
 - Configuração inválida: corrija o TOML indicado; a CLI não ignora silenciosamente esse arquivo.
