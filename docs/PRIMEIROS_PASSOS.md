@@ -45,6 +45,6 @@ O desktop precisa de WebView2; o instalador avisa se estiver ausente. O PHP pode
 
 Não precisa instalar Go ou Node para usar o pacote pronto. Seus runtimes e projetos são preservados ao desinstalar o aplicativo.
 
-Também disponíveis: Bun, Go, Deno, Git, Rust, Composer, Yarn, pnpm, vcpkg e Chocolatey. Veja [Ferramentas e dependências](FERRAMENTAS.md).
+Também disponíveis Bun, Go, .NET, Deno, Git, Rust, Composer, Yarn, pnpm, vcpkg e Chocolatey. Veja [Ferramentas e dependências](FERRAMENTAS.md).
 
 Mais detalhes: [Suporte](SUPORTE.md) · [Desktop e build](DESKTOP.md) · [CLI/JSON](CLI_JSON.md).

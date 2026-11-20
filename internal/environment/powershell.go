@@ -116,7 +116,7 @@ func renderPowerShell(paths []string, variables map[string]*string) (string, err
             $parsed = ConvertFrom-Json -InputObject $env:VERMAN_ENV_BACKUP
             if ($parsed -isnot [pscustomobject]) { throw 'invalid' }
             foreach ($property in $parsed.PSObject.Properties) {
-                if (@('PHPRC','PHP_INI_SCAN_DIR','PYTHONHOME','PYTHONPATH','GOROOT','GOTOOLCHAIN','CARGO_HOME','RUSTUP_HOME','RUSTUP_TOOLCHAIN','VCPKG_ROOT','CHOCOLATEYINSTALL') -notcontains $property.Name) { throw 'invalid' }
+                if (@('PHPRC','PHP_INI_SCAN_DIR','PYTHONHOME','PYTHONPATH','GOROOT','GOTOOLCHAIN','CARGO_HOME','RUSTUP_HOME','RUSTUP_TOOLCHAIN','VCPKG_ROOT','CHOCOLATEYINSTALL','DOTNET_ROOT','DOTNET_ROOT_X64','DOTNET_MULTILEVEL_LOOKUP') -notcontains $property.Name) { throw 'invalid' }
                 if ($null -ne $property.Value -and $property.Value -isnot [string]) { throw 'invalid' }
                 $oldVars[$property.Name] = $property.Value
             }

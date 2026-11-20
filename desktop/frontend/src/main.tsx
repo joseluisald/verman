@@ -1,4 +1,4 @@
-import { names, descriptions, languages } from "./tools";
+import { names, descriptions, languages, logos } from "./tools";
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import ReactMarkdown from "react-markdown";
@@ -116,44 +116,9 @@ function Icon({ name, size = 19 }: { name: string; size?: number }) {
   );
 }
 function Mark({ lang }: { lang: Language }) {
-  if (!["node", "php", "python"].includes(lang)) return <span className={"langmark " + lang} aria-hidden="true"><b>{names[lang].slice(0, 2)}</b></span>;
   return (
-    <span className={"langmark " + lang} aria-hidden="true">
-      {lang === "node" ? (
-        <svg width="34" height="38" viewBox="0 0 36 40">
-          <path
-            d="m18 2 16 9v18l-16 9L2 29V11Z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.4"
-          />
-          <text
-            x="10"
-            y="26"
-            fill="currentColor"
-            fontSize="21"
-            fontFamily="monospace"
-          >
-            n
-          </text>
-        </svg>
-      ) : lang === "php" ? (
-        <i>php</i>
-      ) : (
-        <svg width="37" height="37" viewBox="0 0 38 38">
-          <path
-            d="M9 16V8q0-5 10-5t10 5v13H14v5H7q-4 0-4-10Z"
-            fill="currentColor"
-          />
-          <path
-            d="M29 22v8q0 5-10 5T9 30V17h15v-5h7q4 0 4 10Z"
-            fill="currentColor"
-            opacity=".55"
-          />
-          <circle cx="15" cy="8" r="1.7" fill="white" />
-          <circle cx="23" cy="30" r="1.7" fill="white" />
-        </svg>
-      )}
+    <span className="langmark" aria-hidden="true">
+      <img src={logos[lang]} alt="" />
     </span>
   );
 }

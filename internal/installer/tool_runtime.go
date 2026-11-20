@@ -31,6 +31,8 @@ func ToolVariables(language, version, root string) map[string]string {
 	switch language {
 	case "go":
 		return map[string]string{"GOROOT": root, "GOTOOLCHAIN": "local"}
+	case "dotnet":
+		return map[string]string{"DOTNET_ROOT": root, "DOTNET_ROOT_X64": root, "DOTNET_MULTILEVEL_LOOKUP": "0"}
 	case "rust":
 		return map[string]string{"CARGO_HOME": filepath.Join(root, "cargo"), "RUSTUP_HOME": filepath.Join(root, "rustup"), "RUSTUP_TOOLCHAIN": version + "-x86_64-pc-windows-msvc"}
 	case "vcpkg":
@@ -111,6 +113,9 @@ func selectedDependency(ctx context.Context, language string) (string, string, f
 }
 func prepareTool(ctx context.Context, root string, a Artifact) error {
 	env := toolEnvironment(a.Language, a.Version, root)
+	if a.Language == "dotnet" {
+		return validateDotnet(ctx, root, a.Version, env)
+	}
 	if a.Language == "rust" {
 		// rustup verifica os manifests e hashes da toolchain; todos os seus dados ficam no staging.
 		env = append(env, "RUSTUP_DIST_SERVER=https://static.rust-lang.org", "RUSTUP_UPDATE_ROOT=https://static.rust-lang.org/rustup", "RUSTUP_INIT_SKIP_MSVC_CHECK=yes", "RUSTUP_INIT_SKIP_PATH_CHECK=yes")
@@ -169,6 +174,32 @@ func prepareTool(ctx context.Context, root string, a Artifact) error {
 	}
 	return err
 }
+
+func validateDotnet(ctx context.Context, root, version string, env []string) error {
+	const executable = "dotnet.exe"
+	binary, err := executablePath(root, executable)
+	if err != nil {
+		return err
+	}
+	home, err := os.MkdirTemp(filepath.Dir(root), "dotnet-cli-")
+	if err != nil {
+		return err
+	}
+	env = append(env, "DOTNET_CLI_HOME="+home, "DOTNET_CLI_TELEMETRY_OPTOUT=1", "DOTNET_NOLOGO=1")
+	result, err := nativeCheck(ctx, root, binary, []string{"--list-sdks"}, env, 90*time.Second)
+	if err != nil {
+		return err
+	}
+	for _, line := range strings.Split(result, "\n") {
+		reported, path, ok := strings.Cut(strings.TrimSpace(line), " [")
+		if ok && reported == version && strings.HasSuffix(path, "]") &&
+			strings.EqualFold(filepath.Clean(strings.TrimSuffix(path, "]")), filepath.Join(root, "sdk")) {
+			return nil
+		}
+	}
+	return fmt.Errorf("SDK .NET %s ausente na instalação: %s", version, result)
+}
+
 func prepareVcpkg(ctx context.Context, root string, a Artifact) error {
 	provider, err := providerFor("vcpkg")
 	if err != nil {

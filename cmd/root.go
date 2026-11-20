@@ -19,7 +19,7 @@ var Version = "dev"
 var rootCmd = &cobra.Command{
 	Use:           "verman",
 	Short:         "Gerenciador de versões de runtimes e ferramentas por projeto",
-	Long:          "Instale e selecione Node, PHP, Python, Bun, Go, Deno, Git, Rust, Composer, Yarn, pnpm, vcpkg e Chocolatey por projeto (Windows x64).",
+	Long:          "Instale e selecione Node, PHP, Python, Bun, Go, .NET, Deno, Git, Rust, Composer, Yarn, pnpm, vcpkg e Chocolatey por projeto (Windows x64).",
 	Version:       Version,
 	Example:       "  verman list php --available\n  verman use php latest\n  verman setup\n  verman doctor php\n  verman exec -- php -v\n  verman support --json",
 	SilenceErrors: true,

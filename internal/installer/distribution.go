@@ -31,8 +31,14 @@ func describeAt(a Artifact, now time.Time) DistributionInfo {
 		}
 		info.PolicySource = a.ChecksumURL
 	}
-	if a.Language == "yarn" && validSHA512(a.SHA512) {
+	if (a.Language == "yarn" || a.Language == "dotnet") && validSHA512(a.SHA512) {
 		info.Trust = "publisher_sha512_https"
+		return info
+	}
+	if a.Language == "dotnet" {
+		info.Installable = false
+		info.Trust = "unverified"
+		info.UnavailableReason = "checksum oficial SHA-512 ausente"
 		return info
 	}
 	switch a.Language {

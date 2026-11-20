@@ -42,7 +42,7 @@ const questions = [
           <span class="orbit orbit-one" aria-hidden="true"></span><span class="orbit orbit-two" aria-hidden="true"></span>
         </div>
       </div>
-      <div class="container hero-bottom"><span>SEU AMBIENTE DE DESENVOLVIMENTO, REUNIDO.</span><div><span>13 ferramentas</span><span>1 configuração por projeto</span><span>0 contas para começar</span></div></div>
+      <div class="container hero-bottom"><span>SEU AMBIENTE DE DESENVOLVIMENTO, REUNIDO.</span><div><span>{tools.length} ferramentas</span><span>1 configuração por projeto</span><span>0 contas para começar</span></div></div>
     </section>
 
     <section id="ferramentas" class="tools-section section-pad">
@@ -50,8 +50,27 @@ const questions = [
         <div class="section-heading split-heading"><div><span class="eyebrow"><span class="tiny-line"></span> UM SÓ LUGAR</span><h2>Um gerenciador.<br/>Muitas possibilidades.</h2></div><p>Do primeiro script à sua stack completa.<br/>Escolha uma ferramenta e veja como começar.</p></div>
         <div class="tool-showcase">
           <div class="tools-list" role="tablist" aria-label="Exemplos por ferramenta" @keydown="keyboard">
-            {tools.map((tool, index) => <button type="button" class="tool-chip" role="tab" id={`tool-${tool.id}`} aria-controls="tool-example" aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1} data-tool={tool.id} data-command={tool.command} data-description={tool.description} data-dependency={tool.dependency} @click="chooseTool"><span class="tool-monogram" style={`--tool-color:${tool.color}`}>{tool.mark}</span><span>{tool.name}</span><span class="tool-dot"></span></button>)}
-            <p class="tools-foot"><Icon name="windows" size={14}/> Todas disponíveis para Windows x64.</p>
+            {tools.map((tool, index) => (
+              <button
+                type="button"
+                class="tool-chip"
+                role="tab"
+                id={`tool-${tool.id}`}
+                aria-controls="tool-example"
+                aria-selected={index === 0 ? 'true' : 'false'}
+                tabindex={index === 0 ? 0 : -1}
+                data-tool={tool.id}
+                data-command={tool.command}
+                data-description={tool.description}
+                data-dependency={tool.dependency}
+                @click="chooseTool"
+              >
+                <span class="tool-logo" aria-hidden="true"><img src={tool.logo} alt="" /></span>
+                <span>{tool.name}</span>
+                <span class="tool-dot"></span>
+              </button>
+            ))}
+            <p class="tools-foot"><Icon name="windows" size={14}/> Windows x64. O SDK .NET está no código atual e ficará disponível em um próximo instalador.</p>
           </div>
           <div class="terminal-panel" id="tool-example" role="tabpanel" aria-label="Comandos para usar a ferramenta selecionada" data-code-block>
             <div class="terminal-top"><span class="window-dots"><i></i><i></i><i></i></span><span>seu-projeto / powershell</span><button class="terminal-copy" data-copy aria-label="Copiar comandos da ferramenta"><Icon name="copy" size={15}/><span>Copiar</span></button></div>

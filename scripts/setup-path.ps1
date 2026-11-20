@@ -23,7 +23,7 @@ foreach ($entry in ($machinePath -split ';')) {
     if (-not $entry) { continue }
     $directory = [Environment]::ExpandEnvironmentVariables($entry.Trim('"'))
     if (Test-Path -LiteralPath (Join-Path $directory '.verman-shims.json')) { continue }
-    foreach ($tool in @('php.exe','node.exe','python.exe','bun.exe','bunx.exe','go.exe','gofmt.exe','deno.exe','git.exe','rust.exe','rustc.exe','rustdoc.exe','cargo.exe','rustup.exe','composer.exe','yarn.exe','yarnpkg.exe','pnpm.exe','vcpkg.exe','chocolatey.exe','choco.exe')) {
+    foreach ($tool in @('php.exe','node.exe','python.exe','bun.exe','bunx.exe','go.exe','gofmt.exe','dotnet.exe','deno.exe','git.exe','rust.exe','rustc.exe','rustdoc.exe','cargo.exe','rustup.exe','composer.exe','yarn.exe','yarnpkg.exe','pnpm.exe','vcpkg.exe','chocolatey.exe','choco.exe')) {
         if (Test-Path -LiteralPath (Join-Path $directory $tool) -PathType Leaf) { $conflicts += (Join-Path $directory $tool) }
     }
 }

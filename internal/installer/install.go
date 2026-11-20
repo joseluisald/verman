@@ -141,7 +141,7 @@ func installOperation(ctx context.Context, p Provider, platform Platform, cacheD
 		return fmt.Errorf("%s %s não disponível para %s/%s; consulte list %s --available --refresh", language, version, platform.OS, platform.Arch, language)
 	}
 	if policy := Describe(*selected); !policy.Installable {
-		return fault.New("artifact_unverified", 4, "Escolha uma versão com SHA-256 oficial em list --available --history.", fmt.Errorf("%s %s: %s", language, version, policy.UnavailableReason))
+		return fault.New("artifact_unverified", 4, "Escolha uma versão com checksum oficial em list --available --history.", fmt.Errorf("%s %s: %s", language, version, policy.UnavailableReason))
 	}
 	if policy := Describe(*selected); policy.Support == "eol" {
 		if err := emit(sink, Event{Kind: EventWarning, Language: language, Version: version, Message: "ramo em fim de suporte (EOL); instalação explícita para compatibilidade"}); err != nil {

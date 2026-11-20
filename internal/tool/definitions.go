@@ -16,6 +16,7 @@ func Definitions() []Definition {
 		{"python", "Python", "runtime", "CPython com pip e venv.", []string{"python", "pip"}, ""},
 		{"bun", "Bun", "runtime", "Runtime JavaScript e gerenciador de pacotes.", []string{"bun", "bunx"}, ""},
 		{"go", "Go", "toolchain", "Compilador Go e gofmt.", []string{"go", "gofmt"}, ""},
+		{"dotnet", ".NET", "toolchain", "SDK .NET com o runtime correspondente.", []string{"dotnet"}, ""},
 		{"deno", "Deno", "runtime", "Runtime JavaScript e TypeScript.", []string{"deno"}, ""},
 		{"git", "Git", "tool", "MinGit portátil para controle de versão.", []string{"git"}, ""},
 		{"rust", "Rust", "toolchain", "Rust, Cargo e rustup em diretórios isolados.", []string{"rust", "rustc", "rustdoc", "cargo", "rustup"}, ""},

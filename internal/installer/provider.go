@@ -58,6 +58,8 @@ func providerFor(language string) (Provider, error) {
 		return &pythonProvider{apiURL: "https://api.github.com/repos/astral-sh/python-build-standalone/releases", downloadURL: "https://github.com/astral-sh/python-build-standalone/releases/download", client: clientFor("python")}, nil
 	case "go":
 		return &goProvider{indexURL: "https://go.dev/dl/?mode=json&include=all", baseURL: "https://go.dev/dl", client: clientFor(language)}, nil
+	case "dotnet":
+		return &dotnetProvider{baseURL: "https://builds.dotnet.microsoft.com/dotnet", client: clientFor(language)}, nil
 	case "composer":
 		return &composerProvider{baseURL: "https://getcomposer.org", client: clientFor(language)}, nil
 	case "yarn":
@@ -92,6 +94,8 @@ func clientFor(language string) *http.Client {
 	case "go":
 		hosts["go.dev"] = true
 		hosts["dl.google.com"] = true
+	case "dotnet":
+		hosts["builds.dotnet.microsoft.com"] = true
 	case "composer":
 		hosts["getcomposer.org"] = true
 	case "yarn":

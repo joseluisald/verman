@@ -1,6 +1,6 @@
 # Verman
 
-Gerencie Node.js, PHP, Python, Bun, Go, Deno, Git, Rust, Composer, Yarn, pnpm, vcpkg e Chocolatey no Windows x64 pela CLI ou pelo desktop.
+Gerencie Node.js, PHP, Python, Bun, Go, .NET, Deno, Git, Rust, Composer, Yarn, pnpm, vcpkg e Chocolatey no Windows x64 pela CLI ou pelo desktop.
 
 ## Instalar
 

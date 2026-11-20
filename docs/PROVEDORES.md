@@ -9,6 +9,7 @@
 | CPython via Astral | Windows/amd64 | python-build-standalone install_only, tar.gz | GitHub do Astral, digest SHA-256 do asset por tag |
 | Bun | Windows/amd64 | ZIP baseline | GitHub oven-sh/bun, digest SHA-256 |
 | Go | Windows/amd64 | ZIP oficial | go.dev/dl, SHA-256 do índice oficial |
+| .NET SDK | Windows/amd64 | ZIP win-x64, SDKs estáveis a partir do .NET 5 | builds.dotnet.microsoft.com, SHA-512 dos metadados oficiais |
 | Deno | Windows/amd64 | ZIP MSVC | GitHub denoland/deno, digest SHA-256 |
 | Git | Windows/amd64 | MinGit ZIP | GitHub git-for-windows/git, digest SHA-256 |
 | Rust | Windows/amd64 | rustup-init + toolchain MSVC mínima | static.rust-lang.org, SHA-256 do bootstrap e verificação dos componentes pelo rustup |
@@ -21,6 +22,8 @@
 Os novos provedores preservam URLs canônicas e reconsultam o hash na origem antes da instalação. Yarn autentica o download por SHA-512/SRI; só então registra também o SHA-256 local no manifesto. `publisher_sha512_https` identifica esse caso. Provedores GitHub consultam as 30 releases mais recentes e ignoram assets sem digest; versões exatas fora do catálogo tentam sua tag oficial, sem prometer cobertura histórica completa. Composer lista a versão estável atual e aceita versões exatas com checksum publicado; Yarn lista versões estáveis do pacote moderno. Git usa `X.Y.Z` com revisão Windows em `build`; vcpkg normaliza datas como `2026.10.29`. Go normaliza versões antigas sem patch como `1.20.0` e ignora pacotes antigos sem SHA-256. Instruções e dependências: [Ferramentas](FERRAMENTAS.md).
 
 O catálogo indica compatibilidade do artefato; não significa que cada versão listada tenha sido executada em todos os Windows. Testes oficiais desta entrega executaram Node 22.11.0/22.12.0, PHP 8.5.12/8.4.27 revisão -1, Python 3.15.2/3.14.10 build 20261110 e Python histórico 3.15.1 build 20261021. PHP exige o redistribuível VC++ x64 compatível, sem instalação global automática. PHP TS/mod_php, x86 e Python embeddable não estão habilitados.
+
+O SDK .NET usa as versões estáveis dos catálogos por canal da Microsoft. O Verman revalida o SHA-512 do ZIP na origem antes de instalar e registra também o SHA-256 local.
 
 Linux/amd64 e macOS/arm64 têm distribuições upstream possíveis, mas exigem implementação de formatos/layouts, testes de execução, ativação, permissões e distribuição próprios. Windows/arm64 também requer pacotes e dependências equivalentes para cada provedor. Nenhuma dessas plataformas foi habilitada apenas porque o Go consegue compilar a CLI. A expansão permanece uma decisão futura baseada em testes reais.
 

@@ -4,7 +4,7 @@ export const preview = !window.go?.main?.App;
 const installed: Record<Language, string[]> = {
   node: ["22.12.0", "22.11.0"],
   php: ["8.5.12"],
-  python: ["3.14.10"], bun: [], go: [], deno: [], git: [], rust: [], composer: [], yarn: [], pnpm: [], vcpkg: [], chocolatey: [],
+  python: ["3.14.10"], bun: [], go: [], dotnet: [], deno: [], git: [], rust: [], composer: [], yarn: [], pnpm: [], vcpkg: [], chocolatey: [],
 };
 const local: Partial<Record<Language, string>> = {
   node: "22.12.0",
@@ -63,7 +63,7 @@ const demo: Bridge = {
     const samples: Record<Language, string[]> = {
       node: ["24.0.0", "22.12.0", "22.11.0"],
       php: ["8.5.12", "8.4.27", "8.3.1"],
-      python: ["3.15.2", "3.14.10", "3.15.1"], bun: ["1.4.4"], go: ["1.27.4"], deno: ["2.9.8"], git: ["2.56.1"], rust: ["1.92.0"], composer: ["2.11.2"], yarn: ["4.18.1"], pnpm: ["12.21.0"], vcpkg: ["2026.10.29"], chocolatey: ["2.7.5"],
+      python: ["3.15.2", "3.14.10", "3.15.1"], bun: ["1.4.4"], go: ["1.27.4"], dotnet: ["10.0.404", "8.0.428"], deno: ["2.9.8"], git: ["2.56.1"], rust: ["1.92.0"], composer: ["2.11.2"], yarn: ["4.18.1"], pnpm: ["12.21.0"], vcpkg: ["2026.10.29"], chocolatey: ["2.7.5"],
     };
     return {
       language,

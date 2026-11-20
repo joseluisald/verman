@@ -443,9 +443,7 @@ code {
   padding: 23px 22px 15px;
 }
 .langmark {
-  color: #365b52;
   background: #edf4f1;
-  font: 600 18px "Segoe UI", sans-serif;
   width: 50px;
   height: 50px;
   display: inline-flex;
@@ -454,23 +452,11 @@ code {
   flex-shrink: 0;
   border-radius: 13px;
 }
-.langmark.node {
-  color: #65a761;
-  background: #f0f7ed;
-}
-.langmark.php {
-  color: #777cb2;
-  background: #f0f0fa;
-}
-.langmark.python {
-  color: #5085b5;
-  background: #edf4fa;
-}
-.langmark.php i {
-  font-family: Georgia, serif;
-  font-size: 25px;
-  font-weight: 700;
-  letter-spacing: -1.5px;
+.langmark > img {
+  display: block;
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
 }
 .runtime-status {
   font-size: 9px;
@@ -767,13 +753,6 @@ code {
   width: 29px;
   height: 29px;
   border-radius: 6px;
-}
-.language-tabs .langmark > svg {
-  width: 23px;
-  height: 23px;
-}
-.language-tabs .langmark i {
-  font-size: 18px;
 }
 .catalog-toolbar {
   padding: 20px;

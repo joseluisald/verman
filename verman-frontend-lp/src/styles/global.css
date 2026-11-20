@@ -612,7 +612,7 @@ code {
   background: #edf5e5;
   box-shadow: 0 0 0 1px #86a176;
 }
-.tool-monogram {
+.tool-logo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -620,12 +620,13 @@ code {
   height: 29px;
   border-radius: 6px;
   background: #eaf0e7;
-  color: var(--tool-color);
-  font-weight: 750;
-  font-family: var(--font-heading);
-  font-size: 13px;
-  letter-spacing: -0.4px;
   flex-shrink: 0;
+}
+.tool-logo > img {
+  display: block;
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
 }
 .tool-dot {
   width: 4px;
@@ -1781,10 +1782,9 @@ code {
     gap: 7px;
     padding: 9px;
   }
-  .tool-monogram {
+  .tool-logo {
     width: 25px;
     height: 25px;
-    font-size: 12px;
   }
   .terminal-body {
     padding-inline: 20px;
@@ -2185,10 +2185,9 @@ code {
     padding: 8px 7px;
     gap: 6px;
   }
-  .tool-monogram {
+  .tool-logo {
     width: 23px;
     height: 26px;
-    font-size: 12px;
   }
   .tool-dot {
     display: none;
@@ -2811,7 +2810,7 @@ code {
   .tool-chip {
     gap: 6px;
   }
-  .tool-monogram {
+  .tool-logo {
     width: 25px;
   }
   .hero-bottom > div {
@@ -2930,10 +2929,9 @@ code {
     gap: 9px;
     padding: 10px;
   }
-  .tool-monogram {
+  .tool-logo {
     width: 28px;
     height: 28px;
-    font-size: 13px;
   }
   .tools-foot {
     line-height: 1.8;
@@ -3154,7 +3152,7 @@ code {
 .faq-grid > div > p {
   color: #5d7056;
 }
-.tool-monogram {
+.tool-logo {
   background: #fff;
 }
 .code-comment {

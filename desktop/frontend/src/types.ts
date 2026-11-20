@@ -1,4 +1,4 @@
-export type Language = "node" | "php" | "python" | "bun" | "go" | "deno" | "git" | "rust" | "composer" | "yarn" | "pnpm" | "vcpkg" | "chocolatey";
+export type Language = "node" | "php" | "python" | "bun" | "go" | "dotnet" | "deno" | "git" | "rust" | "composer" | "yarn" | "pnpm" | "vcpkg" | "chocolatey";
 export type Runtime = {
   language: Language;
   installed: string[];

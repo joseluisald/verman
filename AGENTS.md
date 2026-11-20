@@ -24,7 +24,9 @@ O plano de amadurecimento está em [ROADMAP_PRODUTO.md](ROADMAP_PRODUTO.md). Ste
 
 ### Expansão de ferramentas (0.5.0)
 
-- `internal/tool/definitions.go` centraliza IDs, comandos e dependências das 13 ferramentas. `Languages()` preserva o nome legado; `tool.Owner` liga cargo/choco/bunx à instalação correta. O frontend mantém sua lista em `tools.ts`, com abas responsivas e teclado para todos os itens.
+- `internal/tool/definitions.go` centraliza IDs, comandos e dependências das ferramentas. `Languages()` preserva o nome legado; `tool.Owner` liga cargo/choco/bunx à instalação correta. O frontend mantém sua lista em `tools.ts`, com abas responsivas e teclado para todos os itens.
+- `dotnet.go` atende SDKs estáveis do .NET 5 em diante no Windows/amd64, por ZIP e SHA-512 dos metadados Microsoft. A seleção ativa o host da instalação e aplica/restaura `DOTNET_ROOT`, `DOTNET_ROOT_X64` e `DOTNET_MULTILEVEL_LOOKUP`. O SDK aplica as regras do `global.json` existente.
+- Desktop e LP incorporam os logos oficiais das ferramentas em arquivos locais e mantêm os nomes nos botões e abas. As origens e os créditos estão em `docs/FERRAMENTAS.md`.
 - `github_tools.go` atende Bun baseline, Deno, MinGit, pnpm nativo, vcpkg-tool e Chocolatey portátil por releases oficiais com digest SHA-256. Lista até 30 releases e tenta a tag oficial para instalação exata fora da lista; não prometa histórico completo. Git preserva revisão Windows em build; vcpkg normaliza datas para X.Y.Z.
 - `go_composer.go`, `yarn.go`, `rust.go`: Go ZIP/SHA-256, Composer PHAR/sidecar SHA-256, Yarn moderno @yarnpkg/cli-dist/SRI SHA-512 e rustup-init/SHA-256. Yarn recebe SHA-256 local somente depois de autenticar SHA-512; metadados preservam ambos. Nunca substitua SRI por hash de um download não autenticado.
 - `tool_runtime.go` valida ferramentas e prepara vcpkg (segundo bundle também verificado) e Rust (`--no-modify-path`, homes privados, servidores oficiais explícitos). ToolVariables é compartilhada pela ativação e validação; backup/restauração inclui Go, Rust, vcpkg e Chocolatey. Não reutilize homes externos nem instale compiladores/VC++ globalmente.
