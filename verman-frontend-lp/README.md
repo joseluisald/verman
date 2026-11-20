@@ -25,13 +25,13 @@ O site pronto fica em `dist/` desta pasta. O build verifica os tipos antes de ge
 Antes de `dev` e `build`, o script prepara o logo e verifica o SHA-256 do instalador em `assets/installers/`. Se a versão de `src/data/product.json` ainda não estiver nessa pasta, o script procura o build local em `../dist/`. Para gerar o pacote na raiz do repositório:
 
 ```powershell
-.\scripts\build-windows.ps1 -Version 0.5.2
+.\scripts\build-windows.ps1 -Version 0.5.5
 ```
 
 Para usar outra localização, informe o caminho completo e mantenha o `.sha256` ao lado:
 
 ```powershell
-$env:VERMAN_INSTALLER_PATH = 'D:\Pacotes\Verman-Setup-0.5.2-windows-amd64.exe'
+$env:VERMAN_INSTALLER_PATH = 'D:\Pacotes\Verman-Setup-0.5.5-windows-amd64.exe'
 ```
 
 A cada versão distribuída, atualize `src/data/product.json` e copie o novo instalador e seu `.sha256` de `../dist/` para `assets/installers/`. O build gera as cópias públicas em `public/downloads/`.
@@ -52,7 +52,7 @@ Selecione o repositório e a branch que contém a LP. O Railpack pode usar só e
 
 Marque `RAILPACK_NODE_VERSION=24` e `SITE_URL` com a URL HTTPS do domínio como disponíveis durante o build. O site é gerado com o instalador versionado e o checksum.
 
-O pacote 0.5.4 é de revisão: assinatura, validação em Windows limpo e licença comercial do compilador Inno ainda precisam ser concluídas antes de anunciar uma distribuição comercial pronta. O download na página é identificado como prévia.
+O pacote 0.5.5 é uma prévia. A assinatura, a validação em Windows limpo e a verificação da licença comercial do compilador Inno continuam pendentes.
 
 ## Imagens e conteúdo
 
